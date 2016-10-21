@@ -9,6 +9,12 @@ public class Category extends PersistEntity {
     @DatabaseField
     private String name;
 
+    public Category(){}
+
+    public Category(String name){
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

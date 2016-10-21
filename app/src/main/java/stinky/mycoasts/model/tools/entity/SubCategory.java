@@ -12,11 +12,26 @@ public class SubCategory extends PersistEntity {
     @DatabaseField(canBeNull = false, foreign = true)
     private Category category;
 
+    public SubCategory(){}
+
+    public SubCategory(String name, Category category){
+        this.name = name;
+        this.category = category;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

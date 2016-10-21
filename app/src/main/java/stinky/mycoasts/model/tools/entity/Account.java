@@ -10,7 +10,7 @@ public class Account extends PersistEntity{
     private String name;
 
     @DatabaseField
-    private int amount;
+    private Integer amount;
 
     public Account(){}
 

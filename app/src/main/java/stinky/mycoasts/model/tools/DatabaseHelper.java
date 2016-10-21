@@ -12,16 +12,18 @@ import java.sql.SQLException;
 
 import stinky.mycoasts.model.tools.dao.AccountDAO;
 import stinky.mycoasts.model.tools.dao.CategoryDAO;
+import stinky.mycoasts.model.tools.dao.CoastDAO;
 import stinky.mycoasts.model.tools.dao.SubCategoryDAO;
 import stinky.mycoasts.model.tools.entity.Account;
 import stinky.mycoasts.model.tools.entity.Category;
+import stinky.mycoasts.model.tools.entity.Coast;
 import stinky.mycoasts.model.tools.entity.SubCategory;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();
 
-    private static final String DATABASE_NAME ="my_coast.db";
+    private static final String DATABASE_NAME = "my_coast.db";
 
     //с каждым увеличением версии, при нахождении в устройстве БД с предыдущей версией будет выполнен метод onUpgrade();
     private static final int DATABASE_VERSION = 1;
@@ -30,6 +32,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private AccountDAO accountDao = null;
     private CategoryDAO categoryDao = null;
     private SubCategoryDAO subCategoryDao = null;
+    private CoastDAO coastDao = null;
 
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,6 +45,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Account.class);
             TableUtils.createTable(connectionSource, Category.class);
             TableUtils.createTable(connectionSource, SubCategory.class);
+            TableUtils.createTable(connectionSource, Coast.class);
         }
         catch (SQLException e){
             Log.e(TAG, "error creating DB " + DATABASE_NAME);
@@ -82,6 +86,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             subCategoryDao = new SubCategoryDAO(getConnectionSource(), SubCategory.class);
         }
         return subCategoryDao;
+    }
+
+    public CoastDAO getCoastDao() throws SQLException{
+        if(coastDao == null){
+            coastDao = new CoastDAO(getConnectionSource(), Coast.class);
+        }
+        return coastDao;
     }
 
     //выполняется при закрытии приложения

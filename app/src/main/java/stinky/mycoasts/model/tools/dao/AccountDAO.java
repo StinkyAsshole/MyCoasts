@@ -14,7 +14,8 @@ public class AccountDAO extends BaseDaoImpl<Account, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<Account> getAllAccounts() throws SQLException{
+    public List<Account> getAll() throws SQLException{
         return this.queryForAll();
     }
+
 }

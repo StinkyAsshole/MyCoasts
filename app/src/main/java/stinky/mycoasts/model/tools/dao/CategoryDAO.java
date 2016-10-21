@@ -14,7 +14,7 @@ public class CategoryDAO extends BaseDaoImpl<Category, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<Category> getAllRoles() throws SQLException{
+    public List<Category> getAll() throws SQLException{
         return this.queryForAll();
     }
 }

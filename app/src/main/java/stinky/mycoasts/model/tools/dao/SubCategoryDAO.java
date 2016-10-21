@@ -15,7 +15,7 @@ public class SubCategoryDAO extends BaseDaoImpl<SubCategory, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<SubCategory> getAllRoles() throws SQLException{
+    public List<SubCategory> getAll() throws SQLException{
         return this.queryForAll();
     }
 }
