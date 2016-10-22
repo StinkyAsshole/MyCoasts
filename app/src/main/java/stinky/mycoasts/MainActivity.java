@@ -8,10 +8,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import java.sql.SQLException;
+
+import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.tools.HelperFactory;
+import stinky.mycoasts.presenters.AccountPresenter;
+import stinky.mycoasts.view.AccountView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Settings implements AccountView{
+
+    @InjectPresenter
+    AccountPresenter accountPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +37,19 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
+
+        if (!isSet(Type.ACCOUNT_ID)){
+            Dialogs.createAccount(this, new Dialogs.MyDialog.OnClickListener() {
+                @Override
+                public void onClick(Dialogs.MyDialog d) {
+                    EditText et = (EditText) d.findViewById(R.id.account_name);
+                    accountPresenter.createAccount(et.getText().toString());
+                }
+            }).show(getSupportFragmentManager(), Dialogs.Tags.createAccount);
+        }
     }
 
     @Override
@@ -58,5 +78,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         HelperFactory.releaseHelper();
         super.onDestroy();
+    }
+
+    @Override
+    public void createAccount(Account account) {
+
+    }
+
+    @Override
+    public void onError(final Throwable e) {
+        final Snackbar t = Snackbar.make(findViewById(R.id.fab), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+        t.setAction(getString(R.string.action_settings), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        t.dismiss();
+                        Dialogs.showMessage(MainActivity.this, Tools.getStackTrace(e));
+                    }
+                }
+        );
+        t.show();
     }
 }
