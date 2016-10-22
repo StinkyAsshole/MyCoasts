@@ -1,4 +1,4 @@
-package stinky.mycoasts.model.tools.entity;
+package stinky.mycoasts.model.entity;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

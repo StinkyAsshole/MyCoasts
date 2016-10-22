@@ -5,6 +5,18 @@ import java.util.Date;
 
 public class DateUtils {
 
+    private Date date;
+
+    private DateUtils(){
+        date = new Date();
+    }
+    private DateUtils(Date date){
+        this.date = date;
+    }
+    private DateUtils(long time){
+        this.date = new Date(time);
+    }
+
     private static Calendar getMount(int mount) {
         if (mount < 1 || mount > 12) {
             throw new RuntimeException("Invalid number of mount");
@@ -48,6 +60,34 @@ public class DateUtils {
         Calendar cal = getMount(mount);
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         return cal.getTime();
+    }
+
+    public static DateUtils now(){
+        return new DateUtils();
+    }
+
+    private final long SECOND = 1000;
+    private final long MINUTE = SECOND*60;
+    private final long HOUR = MINUTE*60;
+    private final long DAY = HOUR*24;
+
+    public DateUtils plusHour(int hours){
+        return new DateUtils(date.getTime() + hours * HOUR);
+    }
+    public DateUtils minusHour(int hours){
+        return plusHour(-1 * hours);
+    }
+
+    public DateUtils plusDay(int days){
+        return new DateUtils(date.getTime() + days * DAY);
+    }
+    public DateUtils minusDay(int days){
+        return plusDay(-1 * days);
+    }
+
+
+    public Date getDate(){
+        return date;
     }
 
 }

@@ -1,6 +1,6 @@
 package stinky.mycoasts;
 
-import android.util.Log;
+import com.j256.ormlite.dao.ForeignCollection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,22 +10,19 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import stinky.mycoasts.model.tools.DateUtils;
+import stinky.mycoasts.model.dao.AccountDAO;
+import stinky.mycoasts.model.dao.CategoryDAO;
+import stinky.mycoasts.model.dao.CoastDAO;
+import stinky.mycoasts.model.dao.SubCategoryDAO;
+import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
+import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.HelperFactory;
-import stinky.mycoasts.model.tools.dao.AccountDAO;
-import stinky.mycoasts.model.tools.dao.CategoryDAO;
-import stinky.mycoasts.model.tools.dao.CoastDAO;
-import stinky.mycoasts.model.tools.dao.SubCategoryDAO;
-import stinky.mycoasts.model.tools.entity.Account;
-import stinky.mycoasts.model.tools.entity.Category;
-import stinky.mycoasts.model.tools.entity.Coast;
-import stinky.mycoasts.model.tools.entity.SubCategory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
@@ -54,18 +51,16 @@ public class DBHelperTest {
         accountRepository.create(acc);
         categoryRepository.create(cat);
 
-        SubCategory subCat = new SubCategory("testSubCat",cat);
-        subCategoryRepository.create(subCat);
+        for (int i = 0; i < 5; i++) {
+            SubCategory subCat = new SubCategory("testSubCat"+i, cat);
+            subCategoryRepository.create(subCat);
+        }
 
-        Coast coast = new Coast();
-        coast.setAmount(200);
-        coast.setAccount(acc);
-        coast.setSubCategory(subCat);
-        coast.setDate(new Date(System.currentTimeMillis() - 60*60*24));
+        List<Category> listCategory = categoryRepository.getAll();
+        assertEquals(1, listCategory.size());
 
-        coastRepository.create(coast);
+        ForeignCollection<SubCategory> list = listCategory.get(0).getSubCategories();
 
-        List<Coast> list = coastRepository.getByDate(DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(),0);
-        assertEquals(1, list.size());
+        assertEquals(5, list.size());
     }
 }

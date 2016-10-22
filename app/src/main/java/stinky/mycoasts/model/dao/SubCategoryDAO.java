@@ -1,4 +1,4 @@
-package stinky.mycoasts.model.tools.dao;
+package stinky.mycoasts.model.dao;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.support.ConnectionSource;
@@ -6,8 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
 import java.util.List;
 
-import stinky.mycoasts.model.tools.entity.Category;
-import stinky.mycoasts.model.tools.entity.SubCategory;
+import stinky.mycoasts.model.entity.Category;
+import stinky.mycoasts.model.entity.SubCategory;
 
 public class SubCategoryDAO extends BaseDaoImpl<SubCategory, Integer> {
 
@@ -15,7 +15,7 @@ public class SubCategoryDAO extends BaseDaoImpl<SubCategory, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<SubCategory> getAll() throws SQLException{
-        return this.queryForAll();
+    public List<SubCategory> getByCategoryId(int categoryId) throws SQLException{
+        return this.query(this.queryBuilder().where().eq("category_id", categoryId).prepare());
     }
 }

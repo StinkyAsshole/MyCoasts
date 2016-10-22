@@ -10,14 +10,15 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-import stinky.mycoasts.model.tools.dao.AccountDAO;
-import stinky.mycoasts.model.tools.dao.CategoryDAO;
-import stinky.mycoasts.model.tools.dao.CoastDAO;
-import stinky.mycoasts.model.tools.dao.SubCategoryDAO;
-import stinky.mycoasts.model.tools.entity.Account;
-import stinky.mycoasts.model.tools.entity.Category;
-import stinky.mycoasts.model.tools.entity.Coast;
-import stinky.mycoasts.model.tools.entity.SubCategory;
+import stinky.mycoasts.model.dao.AccountDAO;
+import stinky.mycoasts.model.dao.CategoryDAO;
+import stinky.mycoasts.model.dao.CoastDAO;
+import stinky.mycoasts.model.dao.SubCategoryDAO;
+import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
+import stinky.mycoasts.model.entity.Coast;
+import stinky.mycoasts.model.entity.SubCategory;
+
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
