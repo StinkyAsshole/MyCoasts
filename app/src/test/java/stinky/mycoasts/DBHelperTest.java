@@ -21,6 +21,7 @@ import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.HelperFactory;
+import stinky.mycoasts.ui.MainActivity;
 
 import static org.junit.Assert.assertEquals;
 

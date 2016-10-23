@@ -24,6 +24,10 @@ public class Settings extends MvpAppCompatActivity {
         return id;
     }
 
+    public void setCurrentAccount(int accountId){
+        SharedPrefsUtils.setIntegerPreference(this, Type.ACCOUNT_ID.getValue(), accountId);
+    }
+
     public boolean isSet(Type type){
         return SharedPrefsUtils.contains(this, type.getValue());
     }

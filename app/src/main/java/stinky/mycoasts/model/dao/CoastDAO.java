@@ -14,7 +14,7 @@ import stinky.mycoasts.model.entity.Coast;
 
 public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
 
-    private long limit = 20;
+    private long limit = 40;
 
     public CoastDAO(ConnectionSource connectionSource, Class<Coast> dataClass) throws SQLException {
         super(connectionSource, dataClass);

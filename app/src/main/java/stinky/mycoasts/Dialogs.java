@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,11 @@ public class Dialogs {
         public static final String createAccount = "create_account_dialog";
     }
 
-    public static DialogFragment createAccount(Context context, MyDialog.OnClickListener onCreate){
+    public static MyDialog createAccount(Context context, MyDialog.OnClickListener onCreate){
         final MyDialog dialog = new MyDialog();
         dialog.setContext(context);
         dialog.setContent(R.layout.dialog_create_account);
+        dialog.setTitle(R.string.dialog_create_account_title);
         dialog.setPositiveButton(R.string.action_create, onCreate);
         return dialog;
     }
@@ -96,6 +98,7 @@ public class Dialogs {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             setRetainInstance(true);
+            Log.d("asd", "asd");
             if (content == null && message == null){
                 throw new RuntimeException("Content is null");
             }
@@ -157,6 +160,7 @@ public class Dialogs {
 
             if (message != null){
                 TextView messageTv = (TextView) findViewById(R.id.message);
+                messageTv.setVisibility(View.VISIBLE);
                 messageTv.setText(message);
             } else {
                 LinearLayout llContent = (LinearLayout) dialogView.findViewById(R.id.dialog_content);
@@ -164,6 +168,7 @@ public class Dialogs {
                     ((ViewGroup) content.getParent()).removeView(content);
                 }
                 llContent.addView(content);
+                llContent.setVisibility(View.VISIBLE);
             }
             return dialogView;
 
@@ -187,6 +192,9 @@ public class Dialogs {
 
         public void setTitle(String text) {
             titleText = text;
+        }
+        public void setTitle(int textId) {
+            titleText = context.getString(textId);
         }
 
         public void setTitleColor(int color) {
@@ -251,9 +259,9 @@ public class Dialogs {
             if (btnOk != null) ((Activity)context).openContextMenu(btnOk);
         }
 
-        public void show() {
+        public void show(String tag) {
             FragmentTransaction ft = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
-            ft.add(this, null);
+            ft.add(this, tag);
             ft.commitAllowingStateLoss();
         }
 
