@@ -10,6 +10,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         HelperFactory.setHelper(getApplicationContext());
+        Settings.setContext(this);
     }
 
     @Override

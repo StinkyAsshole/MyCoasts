@@ -1,10 +1,17 @@
 package stinky.mycoasts;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
-public class Settings extends MvpAppCompatActivity {
+public class Settings {
+
+    private static Context context;
+
+    public static void setContext(Context context) {
+        Settings.context = context;
+    }
 
     public enum Type{
         ACCOUNT_ID("account_id");
@@ -16,19 +23,19 @@ public class Settings extends MvpAppCompatActivity {
         public void setValue(String value) {this.value = value;}
     }
 
-    public Integer getCurrentAccount(){
-        int id = SharedPrefsUtils.getIntegerPreference(this, Type.ACCOUNT_ID.getValue(), -1);
+    public static Integer getCurrentAccount() throws NotFoundException {
+        int id = SharedPrefsUtils.getIntegerPreference(context, Type.ACCOUNT_ID.getValue(), -1);
         if (id < 0){
-            return null;
+            throw new NotFoundException();
         }
         return id;
     }
 
-    public void setCurrentAccount(int accountId){
-        SharedPrefsUtils.setIntegerPreference(this, Type.ACCOUNT_ID.getValue(), accountId);
+    public static void setCurrentAccount(int accountId){
+        SharedPrefsUtils.setIntegerPreference(context, Type.ACCOUNT_ID.getValue(), accountId);
     }
 
-    public boolean isSet(Type type){
-        return SharedPrefsUtils.contains(this, type.getValue());
+    public static boolean isSet(Type type){
+        return SharedPrefsUtils.contains(context, type.getValue());
     }
 }

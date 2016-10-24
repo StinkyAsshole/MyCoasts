@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.tools.HelperFactory;
 
 public class AccountDAO extends BaseDaoImpl<Account, Integer> {
 
@@ -18,4 +19,9 @@ public class AccountDAO extends BaseDaoImpl<Account, Integer> {
         return this.queryForAll();
     }
 
+    @Override
+    public int delete(Account data) throws SQLException {
+        HelperFactory.getHelper().getCoastDao().deleteByAccountId(data.getId());
+        return super.delete(data);
+    }
 }

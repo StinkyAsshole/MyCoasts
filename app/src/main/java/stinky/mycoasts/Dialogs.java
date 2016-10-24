@@ -19,18 +19,46 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
+import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.ui.ViewHolder.AccountViewHolder;
+
 public class Dialogs {
 
     public static class Tags{
         public static final String createAccount = "create_account_dialog";
+        public static final String selectAccount = "select_account_dialog";
     }
 
     public static MyDialog createAccount(Context context, MyDialog.OnClickListener onCreate){
-        final MyDialog dialog = new MyDialog();
-        dialog.setContext(context);
+        final MyDialog dialog = MyDialog.getInstance(context);
         dialog.setContent(R.layout.dialog_create_account);
         dialog.setTitle(R.string.dialog_create_account_title);
         dialog.setPositiveButton(R.string.action_create, onCreate);
+        return dialog;
+    }
+
+    public static MyDialog selectAccount(final Context context, List<Account> accountList, final MyDialog.OnClickListener onCreateAccount, final ListDialogAdapter.OnItemClickListener onSelectAccount){
+        final ListDialog dialog = new ListDialog();
+        dialog.setContext(context);
+        dialog.setTitle("Выберите счет");
+        ListDialogAdapter<Account, AccountViewHolder> adapter = new ListDialogAdapter<>(accountList,AccountViewHolder.class,R.layout.item_select_account_list);
+        adapter.setOnItemClickListener(new ListDialogAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(ListDialogAdapter parent, View view, Object selectedObject, int position) {
+                dialog.dismiss();
+                onSelectAccount.onClick(parent,view,selectedObject,position);
+            }
+        });
+        dialog.setAdapter(adapter);
+        dialog.setPositiveButton(R.string.action_create, new MyDialog.OnClickListener() {
+            @Override
+            public void onClick(MyDialog d) {
+                d.dismiss();
+                createAccount(context,onCreateAccount).show(Tags.createAccount);
+            }
+        });
         return dialog;
     }
 
@@ -79,6 +107,12 @@ public class Dialogs {
         private Button btnOk;
         private Button btnCancel;
         private boolean btnEnabled = true;
+
+        public static MyDialog getInstance(Context context){
+            MyDialog d = new MyDialog();
+            d.setContext(context);
+            return d;
+        }
 
         @NonNull
         @Override

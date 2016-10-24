@@ -6,19 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public abstract class ListDialogAdapter<I,V extends ListDialogAdapter.ViewHolder> extends RecyclerView.Adapter<V>{
-    private ArrayList<I> list;
+public class ListDialogAdapter<I,V extends ListDialogAdapter.ViewHolder> extends RecyclerView.Adapter<V>{
+    private List<I> list;
     protected OnItemClickListener listener;
     private Class<V> clazz;
     private int layoutId;
 
-    interface OnItemClickListener{
-        void onClick(ListDialogAdapter parent, View view, int position);
+    public interface OnItemClickListener{
+        void onClick(ListDialogAdapter parent, View view, Object selectedObject, int position);
     }
 
     public ListDialogAdapter(){};
-    public ListDialogAdapter(ArrayList<I> list, Class<V> clazz, int layoutId){
+    public ListDialogAdapter(List<I> list, Class<V> clazz, int layoutId){
         this.list = list;
         this.clazz = clazz;
         this.layoutId = layoutId;
@@ -48,10 +49,10 @@ public abstract class ListDialogAdapter<I,V extends ListDialogAdapter.ViewHolder
 
         vh.bind(list.get(position));
             if (listener != null){
-                vh.root.setOnClickListener(new View.OnClickListener() {
+                vh.getRoot().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        listener.onClick(ListDialogAdapter.this, view,position);
+                        listener.onClick(ListDialogAdapter.this, view, list.get(position), position);
                     }
                 });
             }
@@ -63,7 +64,7 @@ public abstract class ListDialogAdapter<I,V extends ListDialogAdapter.ViewHolder
     }
 
     public abstract static class ViewHolder<I> extends RecyclerView.ViewHolder {
-        View root;
+        private View root;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -71,5 +72,9 @@ public abstract class ListDialogAdapter<I,V extends ListDialogAdapter.ViewHolder
         }
 
         abstract public void bind(I obj);
+
+        public View getRoot() {
+            return root;
+        }
     }
 }

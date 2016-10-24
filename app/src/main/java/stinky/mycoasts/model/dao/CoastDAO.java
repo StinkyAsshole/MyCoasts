@@ -1,6 +1,8 @@
 package stinky.mycoasts.model.dao;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedDelete;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
@@ -39,5 +41,12 @@ public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
 
     private QueryBuilder<Coast, Integer> pageQuery(int page) throws SQLException {
         return queryBuilder().limit(limit).offset(page*limit);
+    }
+
+
+    public int deleteByAccountId(int accountid) throws SQLException {
+        DeleteBuilder<Coast, Integer> deleteBuilder = deleteBuilder();
+        deleteBuilder.where().eq("account_id", accountid);
+        return deleteBuilder.delete();
     }
 }

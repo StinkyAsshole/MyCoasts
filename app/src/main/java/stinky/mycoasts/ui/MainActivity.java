@@ -11,11 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
+import stinky.mycoasts.ListDialogAdapter;
 import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
@@ -25,10 +27,19 @@ import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
 import stinky.mycoasts.view.ErrorView;
 
-public class MainActivity extends Settings implements AccountView, ErrorView{
+public class MainActivity extends MvpAppCompatActivity implements AccountView, ErrorView{
 
     @InjectPresenter
     AccountPresenter accountPresenter;
+
+    Dialogs.MyDialog.OnClickListener onCreateAccount = new Dialogs.MyDialog.OnClickListener() {
+        @Override
+        public void onClick(Dialogs.MyDialog d) {
+            EditText et = (EditText) d.findViewById(R.id.account_name);
+            accountPresenter.createAccount(et.getText().toString());
+            d.dismiss();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +54,36 @@ public class MainActivity extends Settings implements AccountView, ErrorView{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                selectAccount();
             }
         });
 
-        if (!isSet(Type.ACCOUNT_ID)){
-            List<Account> accList = accountPresenter.getAccountList();
-            if (!accList.isEmpty()){
-                // TODO select Account dialog
-            } else {
-                Dialogs.createAccount(this, new Dialogs.MyDialog.OnClickListener() {
-                    @Override
-                    public void onClick(Dialogs.MyDialog d) {
-                        EditText et = (EditText) d.findViewById(R.id.account_name);
-                        accountPresenter.createAccount(et.getText().toString());
-                    }
-                }).show(Dialogs.Tags.createAccount);
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Диалог для трат
             }
+        });
+
+
+        if (!Settings.isSet(Settings.Type.ACCOUNT_ID)){
+            selectAccount();
+        }
+    }
+
+    private void selectAccount(){
+        List<Account> accList = accountPresenter.getAccountList();
+        if (!accList.isEmpty()){
+            Dialogs.selectAccount(this, accList, onCreateAccount, new ListDialogAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(ListDialogAdapter parent, View view, Object selectedObj, int position) {
+                    accountPresenter.selectAccount((Account) selectedObj);
+                }
+            }).show(Dialogs.Tags.selectAccount);
+        } else {
+            Dialogs.createAccount(this, onCreateAccount).show(Dialogs.Tags.createAccount);
         }
     }
 
@@ -86,9 +110,14 @@ public class MainActivity extends Settings implements AccountView, ErrorView{
 
     @Override
     public void selectAccount(Account account, List<Coast> coastList) {
-        setCurrentAccount(account.getId());
+        Settings.setCurrentAccount(account.getId());
 
-        // TODO Создать фрагмент
+        Fragment fragment = new RecyclerViewFragment();
+        Bundle args = new Bundle();
+        args.putString("text", account.getName());
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

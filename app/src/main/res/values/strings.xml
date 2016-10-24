@@ -4,6 +4,11 @@
 
     <string name="dialog_create_account_title">Новый счет</string>
     <string name="hint_account_name">Название счета</string>
+
     <string name="action_create">Создать</string>
     <string name="action_details">Подробнее</string>
+    <string name="action_delete_account">Удалить счет</string>
+    <string name="action_deleted">Удалено</string>
+
+    <string name="error_delete_account">Не удалось удалить счет</string>
 </resources>

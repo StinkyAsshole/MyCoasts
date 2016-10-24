@@ -16,4 +16,9 @@
     <dimen name="dialog_button_separator">8dp</dimen>
 
     <dimen name="dialog_title_text_size">20sp</dimen>
+
+    <dimen name="text_size_normal">20sp</dimen>
+    <dimen name="text_view_height">50dp</dimen>
+
+    <dimen name="item_list_height">60dp</dimen>
 </resources>
