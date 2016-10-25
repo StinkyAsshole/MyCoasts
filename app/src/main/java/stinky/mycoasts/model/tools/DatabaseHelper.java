@@ -54,6 +54,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
+    public static void truncateDataBase(){
+        try {
+            ConnectionSource connectionSource = HelperFactory.getHelper().getConnectionSource();
+            TableUtils.clearTable(connectionSource, Account.class);
+            TableUtils.clearTable(connectionSource, Category.class);
+            TableUtils.clearTable(connectionSource, SubCategory.class);
+            TableUtils.clearTable(connectionSource, Coast.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     //Выполняется, когда БД имеет версию отличную от текущей
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVer, int newVer){

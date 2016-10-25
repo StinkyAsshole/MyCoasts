@@ -7,12 +7,12 @@ import android.widget.TextView;
 
 import java.sql.SQLException;
 
-import stinky.mycoasts.ListDialogAdapter;
+import stinky.mycoasts.ListAdapter;
 import stinky.mycoasts.R;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.tools.HelperFactory;
 
-public class AccountViewHolder extends ListDialogAdapter.ViewHolder<Account> {
+public class AccountViewHolder extends ListAdapter.ViewHolder<Account> {
     TextView name;
     TextView amount;
     ImageView delete;
@@ -33,7 +33,7 @@ public class AccountViewHolder extends ListDialogAdapter.ViewHolder<Account> {
             public void onClick(View view) {
                 try {
                     HelperFactory.getHelper().getAccountDao().delete(obj);
-                    getRoot().setVisibility(View.GONE);
+                    getAdapter().remove(obj);
                     Snackbar.make(view, R.string.action_deleted, Snackbar.LENGTH_SHORT).show();
                 } catch (SQLException e) {
                     Snackbar.make(view, R.string.error_delete_account, Snackbar.LENGTH_SHORT).show();

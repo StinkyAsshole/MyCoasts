@@ -1,6 +1,7 @@
 package stinky.mycoasts.ui;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,15 +15,23 @@ import android.widget.EditText;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
-import stinky.mycoasts.ListDialogAdapter;
+import stinky.mycoasts.ListAdapter;
+import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
+import stinky.mycoasts.model.entity.SubCategory;
+import stinky.mycoasts.model.tools.DateUtils;
+import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
 import stinky.mycoasts.view.ErrorView;
@@ -61,8 +70,30 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
+            Account account;
             @Override
             public void onClick(View view) {
+                try {
+                    HelperFactory.getHelper().truncateDataBase();
+                    account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
+
+                    Category category = new Category();
+                    category.setName("Категория 1");
+                    SubCategory subCategory = new SubCategory();
+                    subCategory.setName("Подкатегория 1");
+                    subCategory.setCategory(category);
+                    Coast coast = new Coast();
+                    coast.setAccount(account);
+                    coast.setAmount(200);
+                    coast.setDate(DateUtils.now());
+                    coast.setSubCategory(subCategory);
+
+                    HelperFactory.getHelper().getCoastDao().create(coast);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
                 // TODO: Диалог для трат
             }
         });
@@ -76,9 +107,9 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     private void selectAccount(){
         List<Account> accList = accountPresenter.getAccountList();
         if (!accList.isEmpty()){
-            Dialogs.selectAccount(this, accList, onCreateAccount, new ListDialogAdapter.OnItemClickListener() {
+            Dialogs.selectAccount(this, accList, onCreateAccount, new ListAdapter.OnItemClickListener() {
                 @Override
-                public void onClick(ListDialogAdapter parent, View view, Object selectedObj, int position) {
+                public void onClick(ListAdapter parent, View view, Object selectedObj, int position) {
                     accountPresenter.selectAccount((Account) selectedObj);
                 }
             }).show(Dialogs.Tags.selectAccount);
@@ -112,9 +143,9 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     public void selectAccount(Account account, List<Coast> coastList) {
         Settings.setCurrentAccount(account.getId());
 
-        Fragment fragment = new RecyclerViewFragment();
+        Fragment fragment = new CoastListFragment();
         Bundle args = new Bundle();
-        args.putString("text", account.getName());
+        args.putSerializable(CoastListFragment.KEY_LIST, new ArrayList<>(coastList));
         fragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();

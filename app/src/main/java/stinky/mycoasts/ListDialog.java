@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView;
 
 public class ListDialog extends Dialogs.MyDialog {
     private RecyclerView listView;
-    private ListDialogAdapter adapter;
+    private ListAdapter adapter;
 
 
-    public void setAdapter(ListDialogAdapter adapter){
+    public void setAdapter(ListAdapter adapter){
         setContent(R.layout.dialog_list);
         listView = (RecyclerView )findViewById(R.id.list_view);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -16,7 +16,7 @@ public class ListDialog extends Dialogs.MyDialog {
         listView.setAdapter(adapter);
     }
 
-    public void setOnItemClickListener(ListDialogAdapter.OnItemClickListener listener){
+    public void setOnItemClickListener(ListAdapter.OnItemClickListener listener){
         adapter.setOnItemClickListener(listener);
     }
 

@@ -4,12 +4,13 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import stinky.mycoasts.model.tools.DateUtils;
 
 @DatabaseTable(tableName = "coast")
-public class Coast extends PersistEntity{
+public class Coast extends PersistEntity implements Serializable{
 
     @DatabaseField
     private Integer amount;

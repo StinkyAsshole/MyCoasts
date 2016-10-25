@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,14 +38,14 @@ public class Dialogs {
         return dialog;
     }
 
-    public static MyDialog selectAccount(final Context context, List<Account> accountList, final MyDialog.OnClickListener onCreateAccount, final ListDialogAdapter.OnItemClickListener onSelectAccount){
+    public static MyDialog selectAccount(final Context context, List<Account> accountList, final MyDialog.OnClickListener onCreateAccount, final ListAdapter.OnItemClickListener onSelectAccount){
         final ListDialog dialog = new ListDialog();
         dialog.setContext(context);
         dialog.setTitle("Выберите счет");
-        ListDialogAdapter<Account, AccountViewHolder> adapter = new ListDialogAdapter<>(accountList,AccountViewHolder.class,R.layout.item_select_account_list);
-        adapter.setOnItemClickListener(new ListDialogAdapter.OnItemClickListener() {
+        ListAdapter<Account, AccountViewHolder> adapter = new ListAdapter<>(accountList,AccountViewHolder.class,R.layout.item_select_account_list);
+        adapter.setOnItemClickListener(new ListAdapter.OnItemClickListener() {
             @Override
-            public void onClick(ListDialogAdapter parent, View view, Object selectedObject, int position) {
+            public void onClick(ListAdapter parent, View view, Object selectedObject, int position) {
                 dialog.dismiss();
                 onSelectAccount.onClick(parent,view,selectedObject,position);
             }
