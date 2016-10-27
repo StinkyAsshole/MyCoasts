@@ -24,4 +24,9 @@
     <dimen name="text_view_height">50dp</dimen>
 
     <dimen name="item_list_height">60dp</dimen>
+
+    <dimen name="round_background_radius">8dp</dimen>
+
+    <dimen name="text_padding">10dp</dimen>
+    <dimen name="text_padding_small">4dp</dimen>
 </resources>

@@ -67,6 +67,9 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
     public int getItemCount() {
         return list.size();
     }
+    public I getItem(int position){
+        return list.get(position);
+    }
 
     public abstract static class ViewHolder<I> extends RecyclerView.ViewHolder {
         private ListAdapter adapter;

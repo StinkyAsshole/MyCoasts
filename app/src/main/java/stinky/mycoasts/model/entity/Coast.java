@@ -15,7 +15,7 @@ public class Coast extends PersistEntity implements Serializable{
     @DatabaseField
     private Integer amount;
 
-    @DatabaseField(canBeNull = false, foreign = true)
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 4)
     private SubCategory subCategory;
 
     @DatabaseField(canBeNull = false, foreign = true)

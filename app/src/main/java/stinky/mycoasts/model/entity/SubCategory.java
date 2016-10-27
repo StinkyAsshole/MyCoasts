@@ -1,10 +1,13 @@
 package stinky.mycoasts.model.entity;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 @DatabaseTable(tableName = "sub_category")
-public class SubCategory extends PersistEntity {
+public class SubCategory extends PersistEntity implements Serializable {
 
     @DatabaseField
     private String name;

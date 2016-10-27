@@ -34,6 +34,7 @@ public class AccountViewHolder extends ListAdapter.ViewHolder<Account> {
                 try {
                     HelperFactory.getHelper().getAccountDao().delete(obj);
                     getAdapter().remove(obj);
+                    getAdapter().notifyDataSetChanged();
                     Snackbar.make(view, R.string.action_deleted, Snackbar.LENGTH_SHORT).show();
                 } catch (SQLException e) {
                     Snackbar.make(view, R.string.error_delete_account, Snackbar.LENGTH_SHORT).show();

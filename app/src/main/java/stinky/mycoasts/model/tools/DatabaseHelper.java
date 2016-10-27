@@ -9,7 +9,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import stinky.mycoasts.Settings;
 import stinky.mycoasts.model.dao.AccountDAO;
 import stinky.mycoasts.model.dao.CategoryDAO;
 import stinky.mycoasts.model.dao.CoastDAO;
@@ -18,6 +20,7 @@ import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.SubCategory;
+import stinky.mycoasts.ui.MainActivity;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -54,15 +57,41 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public static void truncateDataBase(){
-        try {
+    public void truncateDataBase() throws SQLException {
             ConnectionSource connectionSource = HelperFactory.getHelper().getConnectionSource();
-            TableUtils.clearTable(connectionSource, Account.class);
+//            TableUtils.clearTable(connectionSource, Account.class);
             TableUtils.clearTable(connectionSource, Category.class);
             TableUtils.clearTable(connectionSource, SubCategory.class);
             TableUtils.clearTable(connectionSource, Coast.class);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    }
+
+    public void generateDemoData() throws SQLException {
+        truncateDataBase();
+        List<Account> accounts = getAccountDao().getAll();
+        Account account;
+        if (accounts == null || accounts.isEmpty()){
+            account = new Account("demo");
+            getAccountDao().create(account);
+        } else {
+            account = accounts.get(0);
+        }
+
+        Category category = new Category();
+        category.setName("Категория 1");
+        getCategoryDao().create(category);
+
+        SubCategory subCategory = new SubCategory();
+        subCategory.setName("Подкатегория 1");
+        subCategory.setCategory(category);
+        getSubCategoryDao().create(subCategory);
+        for (int i = 0; i < 10; i++) {
+            Coast coast = new Coast();
+            coast.setAccount(account);
+            coast.setAmount(200);
+            coast.setDate(DateUtils.now().plusHour(i));
+            coast.setSubCategory(subCategory);
+            getCoastDao().create(coast);
+            Log.d(MainActivity.TAG,coast.getSubCategory().getName());
         }
     }
 

@@ -5,10 +5,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
 import java.util.List;
 
 @DatabaseTable(tableName = "category")
-public class Category extends PersistEntity {
+public class Category extends PersistEntity implements Serializable {
 
     @DatabaseField
     private String name;

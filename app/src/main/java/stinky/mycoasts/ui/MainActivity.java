@@ -1,7 +1,6 @@
 package stinky.mycoasts.ui;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,14 +14,11 @@ import android.widget.EditText;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
 import stinky.mycoasts.ListAdapter;
-import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
@@ -37,6 +33,8 @@ import stinky.mycoasts.view.AccountView;
 import stinky.mycoasts.view.ErrorView;
 
 public class MainActivity extends MvpAppCompatActivity implements AccountView, ErrorView{
+
+    public final static String TAG = "MainActivity";
 
     @InjectPresenter
     AccountPresenter accountPresenter;
@@ -64,47 +62,35 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
             @Override
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                selectAccount();
+                onAccountSelect();
             }
         });
 
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
-            Account account;
             @Override
             public void onClick(View view) {
                 try {
-                    HelperFactory.getHelper().truncateDataBase();
-                    account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
+                    showMessage("generate");
+                    Account account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
+                    HelperFactory.getHelper().generateDemoData();
+                    List<Coast> list = HelperFactory.getHelper().getCoastDao().getByDate(account.getId(), DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(), 0);
 
-                    Category category = new Category();
-                    category.setName("Категория 1");
-                    SubCategory subCategory = new SubCategory();
-                    subCategory.setName("Подкатегория 1");
-                    subCategory.setCategory(category);
-                    Coast coast = new Coast();
-                    coast.setAccount(account);
-                    coast.setAmount(200);
-                    coast.setDate(DateUtils.now());
-                    coast.setSubCategory(subCategory);
-
-                    HelperFactory.getHelper().getCoastDao().create(coast);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NotFoundException e) {
+                    Log.d(MainActivity.TAG, list.get(0).getSubCategory().getName());
+//                    selectAccount(account, list);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 // TODO: Диалог для трат
             }
         });
 
-
         if (!Settings.isSet(Settings.Type.ACCOUNT_ID)){
-            selectAccount();
+            onAccountSelect();
         }
     }
 
-    private void selectAccount(){
+    private void onAccountSelect(){
         List<Account> accList = accountPresenter.getAccountList();
         if (!accList.isEmpty()){
             Dialogs.selectAccount(this, accList, onCreateAccount, new ListAdapter.OnItemClickListener() {
@@ -169,9 +155,11 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     public void showMessage(String message) {
         View view = this.findViewById(android.R.id.content);
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof Dialogs.MyDialog){
-                view = fragment.getView();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof Dialogs.MyDialog) {
+                    view = fragment.getView();
+                }
             }
         }
 
