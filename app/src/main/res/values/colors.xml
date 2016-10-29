@@ -11,4 +11,5 @@
 
     <color name="text">#636363</color>
     <color name="text_light">#ffffff</color>
+    <color name="text_dark">#000</color>
 </resources>

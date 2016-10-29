@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DateUtils {
 
@@ -71,7 +72,7 @@ public class DateUtils {
     }
 
     public static String toString(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("d:MM:yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("d.MM.yyyy", Locale.getDefault());
         return format.format(date);
     }
 

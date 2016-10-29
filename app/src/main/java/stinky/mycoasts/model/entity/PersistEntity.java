@@ -6,8 +6,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 
 public abstract class PersistEntity implements Serializable{
-
-    @DatabaseField(columnName = "id", generatedId = true)
+    final public static String COLUMN_ID = "_id";
+    @DatabaseField(columnName = COLUMN_ID, generatedId = true)
     private Integer id;
 
     public Integer getId() {

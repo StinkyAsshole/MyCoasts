@@ -45,7 +45,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_above="@id/fab"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@drawable/add" />
 </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

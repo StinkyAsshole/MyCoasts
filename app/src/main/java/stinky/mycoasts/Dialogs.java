@@ -3,31 +3,42 @@ package stinky.mycoasts;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.FilterQueryProvider;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.tools.HelperFactory;
+import stinky.mycoasts.ui.MainActivity;
 import stinky.mycoasts.ui.ViewHolder.AccountViewHolder;
+import stinky.mycoasts.view.ErrorView;
 
 public class Dialogs {
 
     public static class Tags{
-        public static final String createAccount = "create_account_dialog";
-        public static final String selectAccount = "select_account_dialog";
+        public static final String createAccount = "create_account";
+        public static final String selectAccount = "select_account";
+        public static final String ADD_COST = "add_coast";
+        public static final String EXCEPTION = "exception";
     }
 
     public static MyDialog createAccount(Context context, MyDialog.OnClickListener onCreate){
@@ -58,6 +69,45 @@ public class Dialogs {
                 createAccount(context,onCreateAccount).show(Tags.createAccount);
             }
         });
+        return dialog;
+    }
+
+    public static MyDialog addCoast(Context context, final ErrorView errorView, MyDialog.OnClickListener addIncome, MyDialog.OnClickListener addOutCome){
+        MyDialog dialog = MyDialog.getInstance(context);
+        dialog.setTitle("Добавить");
+        dialog.setContent(R.layout.dialog_add_coast);
+        AutoCompleteTextView tv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence charSequence) {
+                if (charSequence == null || charSequence.length() == 0){
+                    return null;
+                }
+                Cursor c = null;
+                try {
+                    c = HelperFactory.getHelper().getCursor(charSequence.toString());
+                } catch (SQLException e) {
+                    errorView.onError(e);
+                }
+                if (c == null){
+                    Log.d(MainActivity.TAG, "C is null");
+                    errorView.showMessage("C is null");
+                }
+                return c;
+            }
+        });
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            @Override
+            public CharSequence convertToString(Cursor cursor) {
+                return cursor.getString(1);
+            }
+        });
+        tv.setAdapter(adapter);
+        dialog.setPositiveButton(R.string.action_income,  addIncome);
+        dialog.setNegativeButton(R.string.action_outcome, addOutCome);
+
         return dialog;
     }
 
@@ -261,6 +311,10 @@ public class Dialogs {
 
         public void setNegativeButton(String text, OnClickListener l) {
             negativeText = text;
+            negativeListener = l;
+        }
+        public void setNegativeButton(int textId, OnClickListener l) {
+            negativeText = context.getString(textId);
             negativeListener = l;
         }
 

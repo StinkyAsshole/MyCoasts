@@ -1,17 +1,21 @@
 package stinky.mycoasts.model.tools;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.j256.ormlite.android.AndroidDatabaseResults;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.dao.CloseableIterator;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import stinky.mycoasts.Settings;
 import stinky.mycoasts.model.dao.AccountDAO;
 import stinky.mycoasts.model.dao.CategoryDAO;
 import stinky.mycoasts.model.dao.CoastDAO;
@@ -19,6 +23,7 @@ import stinky.mycoasts.model.dao.SubCategoryDAO;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
+import stinky.mycoasts.model.entity.PersistEntity;
 import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.ui.MainActivity;
 
@@ -30,7 +35,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final String DATABASE_NAME = "my_coast.db";
 
     //с каждым увеличением версии, при нахождении в устройстве БД с предыдущей версией будет выполнен метод onUpgrade();
-    private static final int DATABASE_VERSION = 1;
+    // TODO сбросить в 1
+    private static final int DATABASE_VERSION = 2;
 
     //ссылки на DAO соответсвующие сущностям, хранимым в БД
     private AccountDAO accountDao = null;
@@ -84,11 +90,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         subCategory.setName("Подкатегория 1");
         subCategory.setCategory(category);
         getSubCategoryDao().create(subCategory);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             Coast coast = new Coast();
             coast.setAccount(account);
-            coast.setAmount(200);
-            coast.setDate(DateUtils.now().plusHour(i));
+            coast.setAmount(10*i + i);
+            coast.setDate(DateUtils.now().plusHour(i*i));
             coast.setSubCategory(subCategory);
             getCoastDao().create(coast);
             Log.d(MainActivity.TAG,coast.getSubCategory().getName());
@@ -98,15 +104,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     //Выполняется, когда БД имеет версию отличную от текущей
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVer, int newVer){
-//        try{
-//            //Так делают ленивые, гораздо предпочтительнее не удаляя БД аккуратно вносить изменения
-//            TableUtils.dropTable(connectionSource, Goal.class, true);
-//            onCreate(db, connectionSource);
-//        }
-//        catch (SQLException e){
-//            Log.e(TAG,"error upgrading db "+DATABASE_NAME+"from ver "+oldVer);
-//            throw new RuntimeException(e);
-//        }
+        try{
+            //Так делают ленивые, гораздо предпочтительнее не удаляя БД аккуратно вносить изменения
+            TableUtils.dropTable(connectionSource, Account.class, true);
+            TableUtils.dropTable(connectionSource, Category.class, true);
+            TableUtils.dropTable(connectionSource, SubCategory.class, true);
+            TableUtils.dropTable(connectionSource, Coast.class, true);
+            onCreate(db, connectionSource);
+        }
+        catch (SQLException e){
+            Log.e(TAG,"error upgrading db "+DATABASE_NAME+"from ver "+oldVer);
+            throw new RuntimeException(e);
+        }
     }
 
     public AccountDAO getAccountDao() throws SQLException{
@@ -135,6 +144,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             coastDao = new CoastDAO(getConnectionSource(), Coast.class);
         }
         return coastDao;
+    }
+
+    public Cursor getCursor(String str) throws SQLException {
+        str = "%"+str+"%";
+        Cursor c = getWritableDatabase().rawQuery(SubCategory.NamedQuery.getAllSubCategoryJoinCategory, new String[]{str});
+        return c;
     }
 
     //выполняется при закрытии приложения

@@ -1,6 +1,7 @@
 package stinky.mycoasts;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import stinky.mycoasts.model.entity.PersistEntity;
+import stinky.mycoasts.ui.MainActivity;
 
 public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolder> extends RecyclerView.Adapter<V>{
     private List<I> list;

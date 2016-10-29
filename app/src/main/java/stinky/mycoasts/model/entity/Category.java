@@ -6,12 +6,13 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.util.List;
 
 @DatabaseTable(tableName = "category")
 public class Category extends PersistEntity implements Serializable {
+    final public static String TABLE_NAME = "category";
 
-    @DatabaseField
+    final public static String COLUMN_NAME = "name";
+    @DatabaseField(columnName = COLUMN_NAME)
     private String name;
 
     @ForeignCollectionField

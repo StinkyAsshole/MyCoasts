@@ -54,7 +54,7 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
     public void selectAccount(Account account) {
         List<Coast> coastList;
         try {
-            coastList = coastRep.getByDate(account.getId(), DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(), 0);
+            coastList = coastRep.getByDate(account.getId(), DateUtils.getStartOfMonth(1), DateUtils.getFinishOfMonth(12), 0);
         } catch (SQLException e) {
             getErrorView().onError(e);
             return;

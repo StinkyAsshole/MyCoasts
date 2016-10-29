@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.SubCategory;
+import stinky.mycoasts.model.tools.DatabaseHelper;
 import stinky.mycoasts.model.tools.DateUtils;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
@@ -53,6 +55,13 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         super.onCreate(savedInstanceState);
         accountPresenter.setErrorView(this);
 
+        try {
+            HelperFactory.getHelper().truncateDataBase();
+            HelperFactory.getHelper().generateDemoData();
+        } catch (SQLException e) {
+            this.onError(e);
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,7 +70,6 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 onAccountSelect();
             }
         });
@@ -70,17 +78,27 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    showMessage("generate");
-                    Account account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
-                    HelperFactory.getHelper().generateDemoData();
-                    List<Coast> list = HelperFactory.getHelper().getCoastDao().getByDate(account.getId(), DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(), 0);
+//                try {
+//                    showMessage("generate");
+//                    Account account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
+//                    HelperFactory.getHelper().generateDemoData();
+//                    List<Coast> list = HelperFactory.getHelper().getCoastDao().getByDate(account.getId(), DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(), 0);
+//
+//                    Log.d(MainActivity.TAG, list.get(0).getSubCategory().getName());
+////                    selectAccount(account, list);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+                Dialogs.addCoast(MainActivity.this, MainActivity.this, new Dialogs.MyDialog.OnClickListener() {
+                    @Override
+                    public void onClick(Dialogs.MyDialog d) {
 
-                    Log.d(MainActivity.TAG, list.get(0).getSubCategory().getName());
-//                    selectAccount(account, list);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    }}, new Dialogs.MyDialog.OnClickListener() {
+                    @Override
+                    public void onClick(Dialogs.MyDialog d) {
+
+                    }
+                }).show(Dialogs.Tags.ADD_COST);
                 // TODO: Диалог для трат
             }
         });
@@ -140,11 +158,13 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     @Override
     public void onError(final Throwable e) {
         final Snackbar t = Snackbar.make(findViewById(R.id.fab), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
-        t.setAction(getString(R.string.action_settings), new View.OnClickListener() {
+        // TODO убрать
+        Tools.getStackTrace(e);
+        t.setAction(getString(R.string.action_details), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         t.dismiss();
-                        Dialogs.showMessage(MainActivity.this, Tools.getStackTrace(e));
+                        Dialogs.showMessage(MainActivity.this, Tools.getStackTrace(e)).show(getSupportFragmentManager(),Dialogs.Tags.EXCEPTION);
                     }
                 }
         );

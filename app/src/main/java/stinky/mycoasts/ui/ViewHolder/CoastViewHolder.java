@@ -31,7 +31,7 @@ public class CoastViewHolder extends ListAdapter.ViewHolder<Coast> {
 
     @Override
     public void bind(final Coast obj) {
-        int dateVisibility = View.GONE;
+        int dateVisibility;
         int position = getAdapterPosition();
 
         if (position == 0){
