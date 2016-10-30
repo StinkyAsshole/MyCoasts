@@ -17,16 +17,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FilterQueryProvider;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.ui.MainActivity;
 import stinky.mycoasts.ui.ViewHolder.AccountViewHolder;
@@ -72,12 +78,13 @@ public class Dialogs {
         return dialog;
     }
 
-    public static MyDialog addCoast(Context context, final ErrorView errorView, MyDialog.OnClickListener addIncome, MyDialog.OnClickListener addOutCome){
-        MyDialog dialog = MyDialog.getInstance(context);
+    public static MyDialog addCoast(Context context, List<Category> categoryList, final ErrorView errorView, MyDialog.OnClickListener addIncome, MyDialog.OnClickListener addOutCome){
+        final MyDialog dialog = MyDialog.getInstance(context);
         dialog.setTitle("Добавить");
         dialog.setContent(R.layout.dialog_add_coast);
         AutoCompleteTextView tv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        final Spinner categoryNameSpinner = (Spinner) dialog.findViewById(R.id.category_name);
+        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
@@ -104,7 +111,31 @@ public class Dialogs {
                 return cursor.getString(1);
             }
         });
+
+        List<String> categoryNameList = new ArrayList<>();
+        categoryNameList.add("Укажите категорию");
+        for (Category cat: categoryList) {
+            categoryNameList.add(cat.getName());
+        }
+
+        final SpinnerAdapter spinnerAdapter = new ArrayAdapter<String>(context, R.layout.support_simple_spinner_dropdown_item, categoryNameList);
+        categoryNameSpinner.setAdapter(spinnerAdapter);
+
         tv.setAdapter(adapter);
+        tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String categoryName = adapter.getCursor().getString(2);
+                for (int j = 0; j < spinnerAdapter.getCount(); j++) {
+                    if (categoryName.equals(spinnerAdapter.getItem(j))){
+                        categoryNameSpinner.setSelection(j);
+                        return;
+                    }
+                }
+                categoryNameSpinner.setSelection(0);
+            }
+        });
         dialog.setPositiveButton(R.string.action_income,  addIncome);
         dialog.setNegativeButton(R.string.action_outcome, addOutCome);
 
@@ -156,6 +187,8 @@ public class Dialogs {
         private Button btnOk;
         private Button btnCancel;
         private boolean btnEnabled = true;
+
+        private Object data;
 
         public static MyDialog getInstance(Context context){
             MyDialog d = new MyDialog();
@@ -372,6 +405,14 @@ public class Dialogs {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public void setData(Object data) {
+            this.data = data;
         }
     }
 }

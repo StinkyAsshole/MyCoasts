@@ -1,5 +1,6 @@
 package stinky.mycoasts.presenters;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import stinky.mycoasts.Dialogs;
 import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.model.dao.AccountDAO;
@@ -69,7 +71,24 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         }
     }
 
-    public void selectAccount(Integer account) {
+    public void addCoastDialog(Context context){
+        try {
+            Dialogs.addCoast(context, categoryRep.getAll(), getErrorView(), new Dialogs.MyDialog.OnClickListener() {
+                @Override
+                public void onClick(Dialogs.MyDialog d) {
+
+                }}, new Dialogs.MyDialog.OnClickListener() {
+                @Override
+                public void onClick(Dialogs.MyDialog d) {
+
+                }
+            }).show(Dialogs.Tags.ADD_COST);
+        } catch (SQLException e) {
+            getErrorView().onError(e);
+        }
+    }
+
+    public void selectAccountById(Integer account) {
         try {
             Account a = accountRep.queryForId(account);
             selectAccount(a);

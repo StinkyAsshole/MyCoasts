@@ -8,10 +8,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Spinner
+            android:id="@+id/category_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_margin"
+            android:layout_marginLeft="@dimen/list_margin"
+            android:layout_marginRight="@dimen/list_margin"
+            />
+
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/item_list_height"
-            android:layout_marginTop="@dimen/list_margin"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/list_margin"
             android:layout_marginRight="@dimen/list_margin"
             >

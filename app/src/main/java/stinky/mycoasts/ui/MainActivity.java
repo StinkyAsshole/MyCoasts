@@ -90,16 +90,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
-                Dialogs.addCoast(MainActivity.this, MainActivity.this, new Dialogs.MyDialog.OnClickListener() {
-                    @Override
-                    public void onClick(Dialogs.MyDialog d) {
-                        accountPresenter.
-                    }}, new Dialogs.MyDialog.OnClickListener() {
-                    @Override
-                    public void onClick(Dialogs.MyDialog d) {
-
-                    }
-                }).show(Dialogs.Tags.ADD_COST);
+               accountPresenter.addCoastDialog(MainActivity.this);
             }
         });
 
@@ -107,7 +98,8 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
             onAccountSelect();
         } else {
             try {
-                accountPresenter.selectAccount(Settings.getCurrentAccount());
+                int accId = Settings.getCurrentAccount();
+                accountPresenter.selectAccountById(accId);
             } catch (NotFoundException e) {
                 onAccountSelect();
             }
