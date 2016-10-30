@@ -10,12 +10,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import stinky.mycoasts.NotFoundException;
+import stinky.mycoasts.Settings;
 import stinky.mycoasts.model.dao.AccountDAO;
 import stinky.mycoasts.model.dao.CategoryDAO;
 import stinky.mycoasts.model.dao.CoastDAO;
 import stinky.mycoasts.model.dao.SubCategoryDAO;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Coast;
+import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.DateUtils;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.view.AccountView;
@@ -51,6 +54,29 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         getViewState().createAccount(acc);
     }
 
+    public void addCoast(Integer subCategoryId, Integer amount){
+        try {
+            Account account = accountRep.queryForId(Settings.getCurrentAccount());
+            SubCategory subCategory = subCategoryRep.queryForId(subCategoryId);
+            Coast coast = new Coast();
+            coast.setAccount(account);
+            coast.setAmount(amount);
+            coast.setDate(DateUtils.now());
+            coast.setSubCategory(subCategory);
+            coastRep.create(coast);
+        } catch (SQLException | NotFoundException e) {
+            getErrorView().onError(e);
+        }
+    }
+
+    public void selectAccount(Integer account) {
+        try {
+            Account a = accountRep.queryForId(account);
+            selectAccount(a);
+        } catch (SQLException e) {
+            getErrorView().onError(e);
+        }
+    }
     public void selectAccount(Account account) {
         List<Coast> coastList;
         try {

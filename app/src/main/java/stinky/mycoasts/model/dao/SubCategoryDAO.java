@@ -18,4 +18,8 @@ public class SubCategoryDAO extends BaseDaoImpl<SubCategory, Integer> {
     public List<SubCategory> getByCategoryId(int categoryId) throws SQLException{
         return this.query(this.queryBuilder().where().eq("category_id", categoryId).prepare());
     }
+
+    public List<SubCategory> getByName(String name) throws SQLException {
+        return this.queryForEq("name", name);
+    }
 }

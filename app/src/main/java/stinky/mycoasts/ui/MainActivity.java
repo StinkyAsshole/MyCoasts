@@ -20,6 +20,7 @@ import java.util.List;
 
 import stinky.mycoasts.Dialogs;
 import stinky.mycoasts.ListAdapter;
+import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
@@ -92,19 +93,24 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
                 Dialogs.addCoast(MainActivity.this, MainActivity.this, new Dialogs.MyDialog.OnClickListener() {
                     @Override
                     public void onClick(Dialogs.MyDialog d) {
-
+                        accountPresenter.
                     }}, new Dialogs.MyDialog.OnClickListener() {
                     @Override
                     public void onClick(Dialogs.MyDialog d) {
 
                     }
                 }).show(Dialogs.Tags.ADD_COST);
-                // TODO: Диалог для трат
             }
         });
 
         if (!Settings.isSet(Settings.Type.ACCOUNT_ID)){
             onAccountSelect();
+        } else {
+            try {
+                accountPresenter.selectAccount(Settings.getCurrentAccount());
+            } catch (NotFoundException e) {
+                onAccountSelect();
+            }
         }
     }
 
