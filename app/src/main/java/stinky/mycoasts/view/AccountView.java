@@ -10,4 +10,5 @@ import stinky.mycoasts.model.entity.Coast;
 public interface AccountView extends MvpView {
     void createAccount(Account account);
     void selectAccount(Account account, List<Coast> coasts);
+    void onAddCoast(Coast coast);
 }

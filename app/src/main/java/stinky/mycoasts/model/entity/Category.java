@@ -39,4 +39,9 @@ public class Category extends PersistEntity implements Serializable {
     public void setSubCategories(ForeignCollection<SubCategory> subCategories) {
         this.subCategories = subCategories;
     }
+
+    public static class NamedQuery{
+        final public static String getAllSubCategoryWithCategory =
+                "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME + " like ?";
+    }
 }

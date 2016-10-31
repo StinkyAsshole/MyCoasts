@@ -75,18 +75,20 @@ public class Dialogs {
                 createAccount(context,onCreateAccount).show(Tags.createAccount);
             }
         });
+        dialog.setCancelable(false);
         return dialog;
     }
 
-    public static MyDialog addCoast(Context context, List<Category> categoryList, final ErrorView errorView, MyDialog.OnClickListener addIncome, MyDialog.OnClickListener addOutCome){
+    public static MyDialog addCoast(Context context, final ErrorView errorView, final MyDialog.OnClickListener addCoast){
         final MyDialog dialog = MyDialog.getInstance(context);
         dialog.setTitle("Добавить");
         dialog.setContent(R.layout.dialog_add_coast);
-        AutoCompleteTextView tv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
-        final Spinner categoryNameSpinner = (Spinner) dialog.findViewById(R.id.category_name);
-        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        AutoCompleteTextView subCategoryTv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
+        final AutoCompleteTextView categoryTv = (AutoCompleteTextView) dialog.findViewById(R.id.category_name);
+        final SimpleCursorAdapter subCategoryAdapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        final SimpleCursorAdapter categoryAdapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_category, null, new String[]{"name"}, new int[]{R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+        subCategoryAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence charSequence) {
                 if (charSequence == null || charSequence.length() == 0){
@@ -94,50 +96,65 @@ public class Dialogs {
                 }
                 Cursor c = null;
                 try {
-                    c = HelperFactory.getHelper().getCursor(charSequence.toString());
+                    c = HelperFactory.getHelper().getCursorFindSubCategory(charSequence.toString());
                 } catch (SQLException e) {
                     errorView.onError(e);
-                }
-                if (c == null){
-                    Log.d(MainActivity.TAG, "C is null");
-                    errorView.showMessage("C is null");
                 }
                 return c;
             }
         });
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+        categoryAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            @Override
+            public CharSequence convertToString(Cursor cursor) {
+                return cursor.getString(2);
+            }
+        });
+
+        categoryAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence charSequence) {
+                if (charSequence == null || charSequence.length() == 0){
+                    return null;
+                }
+                Cursor c = null;
+                try {
+                    c = HelperFactory.getHelper().getCursorFindCategory(charSequence.toString());
+                } catch (SQLException e) {
+                    errorView.onError(e);
+                }
+                return c;
+            }
+        });
+        subCategoryAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             @Override
             public CharSequence convertToString(Cursor cursor) {
                 return cursor.getString(1);
             }
         });
 
-        List<String> categoryNameList = new ArrayList<>();
-        categoryNameList.add("Укажите категорию");
-        for (Category cat: categoryList) {
-            categoryNameList.add(cat.getName());
-        }
 
-        final SpinnerAdapter spinnerAdapter = new ArrayAdapter<String>(context, R.layout.support_simple_spinner_dropdown_item, categoryNameList);
-        categoryNameSpinner.setAdapter(spinnerAdapter);
-
-        tv.setAdapter(adapter);
-        tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        subCategoryTv.setAdapter(subCategoryAdapter);
+        categoryTv.setAdapter(categoryAdapter);
+        subCategoryTv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                String categoryName = adapter.getCursor().getString(2);
-                for (int j = 0; j < spinnerAdapter.getCount(); j++) {
-                    if (categoryName.equals(spinnerAdapter.getItem(j))){
-                        categoryNameSpinner.setSelection(j);
-                        return;
-                    }
-                }
-                categoryNameSpinner.setSelection(0);
+                categoryTv.setText(subCategoryAdapter.getCursor().getString(2));
             }
         });
-        dialog.setPositiveButton(R.string.action_income,  addIncome);
-        dialog.setNegativeButton(R.string.action_outcome, addOutCome);
+        dialog.setPositiveButton(R.string.action_income, new MyDialog.OnClickListener() {
+            @Override
+            public void onClick(MyDialog d) {
+                dialog.setData(1);
+                addCoast.onClick(d);
+            }
+        });
+        dialog.setNegativeButton(R.string.action_outcome, new MyDialog.OnClickListener() {
+            @Override
+            public void onClick(MyDialog d) {
+                dialog.setData(-1);
+                addCoast.onClick(d);
+            }
+        });
 
         return dialog;
     }

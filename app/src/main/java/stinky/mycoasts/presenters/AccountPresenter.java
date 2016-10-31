@@ -6,6 +6,8 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.query.In;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import stinky.mycoasts.model.dao.CategoryDAO;
 import stinky.mycoasts.model.dao.CoastDAO;
 import stinky.mycoasts.model.dao.SubCategoryDAO;
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.DateUtils;
@@ -32,6 +35,23 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
     CoastDAO coastRep;
     CategoryDAO categoryRep;
     SubCategoryDAO subCategoryRep;
+
+    private SubCategory getSubCategoryByNameAndCategory(Category category, String subcategoryName) throws SQLException {
+        QueryBuilder<SubCategory, Integer> subCategoryQb = subCategoryRep.queryBuilder();
+        QueryBuilder<Category, Integer> categoryQb = categoryRep.queryBuilder();
+        categoryQb.where().eq(SubCategory.COLUMN_NAME, category.getName());
+        subCategoryQb.join(categoryQb);
+        subCategoryQb.where().eq(Category.COLUMN_NAME, subcategoryName);
+        List<SubCategory> subCategories = subCategoryRep.query(subCategoryQb.prepare());
+        if (subCategories == null || subCategories.isEmpty()){
+            SubCategory subCategory = new SubCategory();
+            subCategory.setName(subcategoryName);
+            subCategory.setCategory(category);
+            subCategoryRep.create(subCategory);
+            return subCategory;
+        }
+        return subCategories.get(0);
+    }
 
     public AccountPresenter() throws SQLException {
         accountRep = HelperFactory.getHelper().getAccountDao();
@@ -56,34 +76,20 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         getViewState().createAccount(acc);
     }
 
-    public void addCoast(Integer subCategoryId, Integer amount){
+    public void addCoast(String categoryName, String subcategoryName, int accountId, int amount){
         try {
-            Account account = accountRep.queryForId(Settings.getCurrentAccount());
-            SubCategory subCategory = subCategoryRep.queryForId(subCategoryId);
+            Category category = categoryRep.getByName(categoryName);
+            SubCategory subCategory = getSubCategoryByNameAndCategory(category, subcategoryName);
+            Account account = accountRep.queryForId(accountId);
+
             Coast coast = new Coast();
             coast.setAccount(account);
             coast.setAmount(amount);
             coast.setDate(DateUtils.now());
             coast.setSubCategory(subCategory);
             coastRep.create(coast);
+            getViewState().onAddCoast(coast);
         } catch (SQLException | NotFoundException e) {
-            getErrorView().onError(e);
-        }
-    }
-
-    public void addCoastDialog(Context context){
-        try {
-            Dialogs.addCoast(context, categoryRep.getAll(), getErrorView(), new Dialogs.MyDialog.OnClickListener() {
-                @Override
-                public void onClick(Dialogs.MyDialog d) {
-
-                }}, new Dialogs.MyDialog.OnClickListener() {
-                @Override
-                public void onClick(Dialogs.MyDialog d) {
-
-                }
-            }).show(Dialogs.Tags.ADD_COST);
-        } catch (SQLException e) {
             getErrorView().onError(e);
         }
     }

@@ -8,14 +8,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Spinner
+        <AutoCompleteTextView
             android:id="@+id/category_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_margin"
             android:layout_marginLeft="@dimen/list_margin"
             android:layout_marginRight="@dimen/list_margin"
-            />
+            android:hint="@string/hint_category_name"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -27,7 +26,9 @@
                 android:id="@+id/subcategory_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/hint_subcategory_name"/>
+                android:hint="@string/hint_subcategory_name">
+            <requestFocus/>
+            </AutoCompleteTextView>
         </FrameLayout>
 
         <LinearLayout
@@ -47,11 +48,13 @@
             <EditText
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
-                android:id="@+id/coast"
+                android:id="@+id/amount"
                 android:layout_width="wrap_content"
                 android:hint="@string/hint_amount"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+                android:digits="0123456789"
+                android:inputType="numberDecimal">
+            </EditText>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

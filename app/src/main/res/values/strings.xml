@@ -6,6 +6,7 @@
 
     <string name="hint_account_name">Название счета</string>
     <string name="hint_subcategory_name">Подкатегория</string>
+    <string name="hint_category_name">Категория</string>
     <string name="hint_amount">Сумма</string>
 
     <string name="action_create">Создать</string>

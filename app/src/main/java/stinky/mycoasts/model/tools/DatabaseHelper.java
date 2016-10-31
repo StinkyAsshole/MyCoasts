@@ -5,11 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.j256.ormlite.android.AndroidDatabaseResults;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.CloseableIterator;
-import com.j256.ormlite.dao.GenericRawResults;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -23,7 +19,6 @@ import stinky.mycoasts.model.dao.SubCategoryDAO;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
-import stinky.mycoasts.model.entity.PersistEntity;
 import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.ui.MainActivity;
 
@@ -146,10 +141,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return coastDao;
     }
 
-    public Cursor getCursor(String str) throws SQLException {
+    public Cursor getCursorFindSubCategory(String str) throws SQLException {
         str = "%"+str+"%";
-        Cursor c = getWritableDatabase().rawQuery(SubCategory.NamedQuery.getAllSubCategoryJoinCategory, new String[]{str});
-        return c;
+        return getWritableDatabase().rawQuery(SubCategory.NamedQuery.getAllSubCategoryWithCategory, new String[]{str});
+    }
+
+    public Cursor getCursorFindCategory(String str) throws SQLException {
+        str = "%"+str+"%";
+        return getWritableDatabase().rawQuery(Category.NamedQuery.getAllSubCategoryWithCategory, new String[]{str});
     }
 
     //выполняется при закрытии приложения

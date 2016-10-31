@@ -41,7 +41,7 @@ public class SubCategory extends PersistEntity implements Serializable {
     }
 
     public static class NamedQuery{
-        final public static String getAllSubCategoryJoinCategory =
+        final public static String getAllSubCategoryWithCategory =
                 "SELECT sc._id as _id, sc.name as scn, c.name as cn FROM " + TABLE_NAME + " sc JOIN " + Category.TABLE_NAME + " c " +
                         " ON sc." + COLUMN_CATEGORY_ID +" = c."+PersistEntity.COLUMN_ID+
                         " WHERE sc." + COLUMN_NAME + " like ?";

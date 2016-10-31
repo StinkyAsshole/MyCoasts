@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -51,6 +53,8 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         }
     };
 
+    private int currentAccountId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,30 +83,23 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                try {
-//                    showMessage("generate");
-//                    Account account = HelperFactory.getHelper().getAccountDao().queryForId(Settings.getCurrentAccount());
-//                    HelperFactory.getHelper().generateDemoData();
-//                    List<Coast> list = HelperFactory.getHelper().getCoastDao().getByDate(account.getId(), DateUtils.getStartOfMonth(), DateUtils.getFinishOfMonth(), 0);
-//
-//                    Log.d(MainActivity.TAG, list.get(0).getSubCategory().getName());
-////                    selectAccount(account, list);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-               accountPresenter.addCoastDialog(MainActivity.this);
+                Dialogs.addCoast(MainActivity.this, MainActivity.this, new Dialogs.MyDialog.OnClickListener() {
+                    @Override
+                    public void onClick(Dialogs.MyDialog d) {
+                        String category = ((AutoCompleteTextView) d.findViewById(R.id.category_name)).getText().toString();
+                        String subCategory = ((AutoCompleteTextView) d.findViewById(R.id.subcategory_name)).getText().toString();
+                        String amount = ((TextView) d.findViewById(R.id.amount)).getText().toString();
+                        accountPresenter.addCoast(category, subCategory, currentAccountId, Math.abs(Integer.parseInt(amount))* (int)d.getData());
+                        d.dismiss();
+                    }}).show(Dialogs.Tags.ADD_COST);
             }
         });
 
-        if (!Settings.isSet(Settings.Type.ACCOUNT_ID)){
+        try {
+            currentAccountId = Settings.getCurrentAccount();
+            accountPresenter.selectAccountById(currentAccountId);
+        } catch (NotFoundException e) {
             onAccountSelect();
-        } else {
-            try {
-                int accId = Settings.getCurrentAccount();
-                accountPresenter.selectAccountById(accId);
-            } catch (NotFoundException e) {
-                onAccountSelect();
-            }
         }
     }
 
@@ -151,6 +148,11 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         fragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
+    @Override
+    public void onAddCoast(Coast coast) {
+
     }
 
     @Override
