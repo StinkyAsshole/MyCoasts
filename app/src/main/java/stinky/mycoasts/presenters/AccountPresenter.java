@@ -62,7 +62,7 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
 
     public void createAccount(String accName){
         if (accName == null || accName.isEmpty()){
-            Log.d("MainActivity", "asd");
+            // TODO Заменить на ресурс
             getErrorView().showMessage("Введите название нового счета");
             return;
         }
@@ -88,6 +88,8 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
             coast.setDate(DateUtils.now());
             coast.setSubCategory(subCategory);
             coastRep.create(coast);
+            account.setAmount(account.getAmount() + amount);
+            accountRep.update(account);
             getViewState().onAddCoast(coast);
         } catch (SQLException | NotFoundException e) {
             getErrorView().onError(e);
