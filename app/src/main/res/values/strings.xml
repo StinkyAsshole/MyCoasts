@@ -22,4 +22,6 @@
     <string name="ruble_symbol_java">\u20BD</string>
     <string name="ruble_symbol_HTML">&#8381;</string>
     <string name="ruble_symbol_HTML_hex">&#x20bd;</string>
+    <string name="amount_rub">%1$d &#8381;</string>
+
 </resources>

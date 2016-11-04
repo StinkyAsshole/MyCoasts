@@ -39,13 +39,12 @@ public class CoastViewHolder extends ListAdapter.ViewHolder<Coast> {
         } else {
             Coast prevObj = (Coast) getAdapter().getItem(position-1);
             if(DateUtils.compare(obj.getDate(), prevObj.getDate(), DateUtils.Unit.DAY) == 0){
-                dateVisibility = View.GONE;
+                dateVisibility = View.INVISIBLE;
             } else {
                 dateVisibility = View.VISIBLE;
             }
         }
-
-        amount.setText(String.valueOf(obj.getAmount()));
+        amount.setText(String.format(getRoot().getResources().getString(R.string.amount_rub), obj.getAmount()));
         category.setText(obj.getSubCategory().getName());
         date.setText(DateUtils.toString(obj.getDate()));
         date.setVisibility(dateVisibility);

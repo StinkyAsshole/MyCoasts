@@ -73,7 +73,7 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
             getErrorView().onError(e);
         }
 
-        getViewState().createAccount(acc);
+        getViewState().onCreateAccount(acc);
     }
 
     public void addCoast(String categoryName, String subcategoryName, int accountId, int amount){
@@ -96,24 +96,21 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         }
     }
 
-    public void selectAccountById(Integer account) {
-        try {
-            Account a = accountRep.queryForId(account);
-            selectAccount(a);
-        } catch (SQLException e) {
-            getErrorView().onError(e);
-        }
+    public void selectAccount(Integer account) {
+        Settings.setCurrentAccount(account);
+        showCoastList(account);
     }
-    public void selectAccount(Account account) {
+
+    public void showCoastList(Integer account) {
         List<Coast> coastList;
         try {
-            coastList = coastRep.getByDate(account.getId(), DateUtils.getStartOfMonth(1), DateUtils.getFinishOfMonth(12), 0);
+            coastList = coastRep.getByDate(account, DateUtils.getStartOfMonth(1), DateUtils.getFinishOfMonth(12), 0);
         } catch (SQLException e) {
             getErrorView().onError(e);
             return;
         }
 
-        getViewState().selectAccount(account, coastList);
+        getViewState().showCoastList(coastList);
     }
 
     public List<Account> getAccountList() {

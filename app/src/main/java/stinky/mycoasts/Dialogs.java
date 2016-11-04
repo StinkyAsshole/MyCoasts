@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
+import stinky.mycoasts.model.entity.PersistEntity;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.ui.MainActivity;
 import stinky.mycoasts.ui.ViewHolder.AccountViewHolder;
@@ -62,7 +64,7 @@ public class Dialogs {
         ListAdapter<Account, AccountViewHolder> adapter = new ListAdapter<>(accountList,AccountViewHolder.class,R.layout.item_select_account_list);
         adapter.setOnItemClickListener(new ListAdapter.OnItemClickListener() {
             @Override
-            public void onClick(ListAdapter parent, View view, Object selectedObject, int position) {
+            public void onClick(ListAdapter parent, View view, PersistEntity selectedObject, int position) {
                 dialog.dismiss();
                 onSelectAccount.onClick(parent,view,selectedObject,position);
             }
@@ -83,7 +85,8 @@ public class Dialogs {
         final MyDialog dialog = MyDialog.getInstance(context);
         dialog.setTitle("Добавить");
         dialog.setContent(R.layout.dialog_add_coast);
-        AutoCompleteTextView subCategoryTv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
+        final AutoCompleteTextView subCategoryTv = (AutoCompleteTextView) dialog.findViewById(R.id.subcategory_name);
+        final EditText amount  = (EditText) dialog.findViewById(R.id.amount);
         final AutoCompleteTextView categoryTv = (AutoCompleteTextView) dialog.findViewById(R.id.category_name);
         final SimpleCursorAdapter subCategoryAdapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_subcategory, null, new String[]{"scn","cn"}, new int[]{R.id.subCategory, R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         final SimpleCursorAdapter categoryAdapter = new SimpleCursorAdapter(context, R.layout.item_autocomplete_category, null, new String[]{"name"}, new int[]{R.id.category}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
@@ -144,6 +147,9 @@ public class Dialogs {
         dialog.setPositiveButton(R.string.action_income, new MyDialog.OnClickListener() {
             @Override
             public void onClick(MyDialog d) {
+                if (Tools.isEmpty(categoryTv, subCategoryTv, amount)){
+                    return;
+                }
                 dialog.setData(1);
                 addCoast.onClick(d);
             }
@@ -151,6 +157,9 @@ public class Dialogs {
         dialog.setNegativeButton(R.string.action_outcome, new MyDialog.OnClickListener() {
             @Override
             public void onClick(MyDialog d) {
+                if (Tools.isEmpty(categoryTv, subCategoryTv, amount)){
+                    return;
+                }
                 dialog.setData(-1);
                 addCoast.onClick(d);
             }

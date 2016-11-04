@@ -6,9 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +26,8 @@ import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
-import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
-import stinky.mycoasts.model.entity.SubCategory;
-import stinky.mycoasts.model.tools.DatabaseHelper;
-import stinky.mycoasts.model.tools.DateUtils;
-import stinky.mycoasts.model.tools.HelperFactory;
+import stinky.mycoasts.model.entity.PersistEntity;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
 import stinky.mycoasts.view.ErrorView;
@@ -60,12 +55,12 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         super.onCreate(savedInstanceState);
         accountPresenter.setErrorView(this);
 
-        try {
-            HelperFactory.getHelper().truncateDataBase();
-            HelperFactory.getHelper().generateDemoData();
-        } catch (SQLException e) {
-            this.onError(e);
-        }
+//        try {
+//            HelperFactory.getHelper().truncateDataBase();
+//            HelperFactory.getHelper().generateDemoData();
+//        } catch (SQLException e) {
+//            this.onError(e);
+//        }
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -97,7 +92,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
         try {
             currentAccountId = Settings.getCurrentAccount();
-            accountPresenter.selectAccountById(currentAccountId);
+            accountPresenter.selectAccount(currentAccountId);
         } catch (NotFoundException e) {
             onAccountSelect();
         }
@@ -108,8 +103,8 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         if (!accList.isEmpty()){
             Dialogs.selectAccount(this, accList, onCreateAccount, new ListAdapter.OnItemClickListener() {
                 @Override
-                public void onClick(ListAdapter parent, View view, Object selectedObj, int position) {
-                    accountPresenter.selectAccount((Account) selectedObj);
+                public void onClick(ListAdapter parent, View view, PersistEntity selectedObj, int position) {
+                    accountPresenter.selectAccount(selectedObj.getId());
                 }
             }).show(Dialogs.Tags.selectAccount);
         } else {
@@ -134,25 +129,23 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
 
     @Override
-    public void createAccount(Account account) {
-        accountPresenter.selectAccount(account);
+    public void onCreateAccount(Account account) {
+        accountPresenter.selectAccount(account.getId());
     }
 
     @Override
-    public void selectAccount(Account account, List<Coast> coastList) {
-        Settings.setCurrentAccount(account.getId());
+    public void onAddCoast(Coast coast) {
 
+    }
+
+    @Override
+    public void showCoastList(List<Coast> coastList){
         Fragment fragment = new CoastListFragment();
         Bundle args = new Bundle();
         args.putSerializable(CoastListFragment.KEY_LIST, new ArrayList<>(coastList));
         fragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-    }
-
-    @Override
-    public void onAddCoast(Coast coast) {
-
     }
 
     @Override

@@ -18,7 +18,7 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
     private int layoutId;
 
     public interface OnItemClickListener{
-        void onClick(ListAdapter parent, View view, Object selectedObject, int position);
+        void onClick(ListAdapter parent, View view, PersistEntity selectedObject, int position);
     }
 
 //    public ListAdapter(){};
