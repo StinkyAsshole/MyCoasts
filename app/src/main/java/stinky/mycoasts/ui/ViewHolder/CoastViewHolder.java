@@ -35,7 +35,7 @@ public class CoastViewHolder extends ListAdapter.ViewHolder<Coast> {
         int position = getAdapterPosition();
 
         if (position == 0){
-            dateVisibility = View.VISIBLE;
+            dateVisibility = View.INVISIBLE;
         } else {
             Coast prevObj = (Coast) getAdapter().getItem(position-1);
             if(DateUtils.compare(obj.getDate(), prevObj.getDate(), DateUtils.Unit.DAY) == 0){

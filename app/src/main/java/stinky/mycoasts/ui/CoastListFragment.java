@@ -63,6 +63,7 @@ public class CoastListFragment extends Fragment {
 
         if (args != null){
             list = (List<Coast>) args.getSerializable(KEY_LIST);
+            date.setText(DateUtils.toString(list.get(0).getDate()));
         }
 
         adapter = new ListAdapter<>(list, CoastViewHolder.class, R.layout.item_coast_list);

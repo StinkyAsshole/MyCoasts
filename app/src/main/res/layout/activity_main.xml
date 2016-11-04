@@ -38,7 +38,7 @@
                 android:textColor="@color/text_light"
                 android:textSize="@dimen/text_primary"
                 android:gravity="center_horizontal"
-                android:text="12.12.12"/>
+                />
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 
