@@ -40,9 +40,12 @@ public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
     }
 
     private QueryBuilder<Coast, Integer> pageQuery(int page) throws SQLException {
-        return queryBuilder().limit(limit).offset(page*limit);
+        return queryBuilder().limit(limit).offset(page*limit).orderBy("date", false);
     }
 
+    public List<Coast> getByPage(int account, int page) throws SQLException {
+        return this.query(pageQuery(page).where().eq("account_id", account).prepare());
+    }
 
     public int deleteByAccountId(int accountid) throws SQLException {
         DeleteBuilder<Coast, Integer> deleteBuilder = deleteBuilder();

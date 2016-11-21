@@ -98,10 +98,10 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
 
     public void selectAccount(Integer account) {
         Settings.setCurrentAccount(account);
-        showCoastList(account);
+        showCoastList(account, 0);
     }
 
-    public void showCoastList(Integer account) {
+    public void showCoastListByCurrentMonth(Integer account) {
         List<Coast> coastList;
         try {
             coastList = coastRep.getByDate(account, DateUtils.getStartOfMonth(1), DateUtils.getFinishOfMonth(12), 0);
@@ -110,7 +110,19 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
             return;
         }
 
-        getViewState().showCoastList(coastList);
+        getViewState().showCoastList(coastList, false);
+    }
+
+    public void showCoastList(Integer account, int page) {
+        List<Coast> coastList;
+        try {
+            coastList = coastRep.getByPage(account, page);
+        } catch (SQLException e) {
+            getErrorView().onError(e);
+            return;
+        }
+
+        getViewState().showCoastList(coastList, false);
     }
 
     public List<Account> getAccountList() {

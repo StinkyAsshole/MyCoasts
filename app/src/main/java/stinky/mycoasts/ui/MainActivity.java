@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
@@ -28,6 +30,7 @@ import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.PersistEntity;
+import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
 import stinky.mycoasts.view.ErrorView;
@@ -55,17 +58,18 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         super.onCreate(savedInstanceState);
         accountPresenter.setErrorView(this);
 
-//        try {
-//            HelperFactory.getHelper().truncateDataBase();
-//            HelperFactory.getHelper().generateDemoData();
-//        } catch (SQLException e) {
-//            this.onError(e);
-//        }
+        try {
+            HelperFactory.getHelper().truncateDataBase();
+            HelperFactory.getHelper().generateDemoData();
+        } catch (SQLException e) {
+            this.onError(e);
+        }
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO: 21.11.2016 Удалить кнопку к херам
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +77,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
                 onAccountSelect();
             }
         });
+        fab.setVisibility(View.INVISIBLE);
 
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -135,17 +140,28 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
     @Override
     public void onAddCoast(Coast coast) {
-
+        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
+        if (fragment != null){
+            showCoastList(Collections.singletonList(coast), true);
+        } else {
+            accountPresenter.showCoastList(currentAccountId, 0);
+        }
     }
 
     @Override
-    public void showCoastList(List<Coast> coastList){
-        Fragment fragment = new CoastListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(CoastListFragment.KEY_LIST, new ArrayList<>(coastList));
-        fragment.setArguments(args);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    public void showCoastList(List<Coast> coastList, boolean toStart){
+        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
+        if (fragment == null) {
+            fragment = new CoastListFragment();
+            Bundle args = new Bundle();
+            args.putSerializable(CoastListFragment.KEY_LIST, new ArrayList<>(coastList));
+            args.putInt(CoastListFragment.KEY_ACCOUNT_ID, currentAccountId);
+            fragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, CoastListFragment.TAG).commit();
+        } else {
+            fragment.adapter.addItems(coastList, toStart);
+            fragment.adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

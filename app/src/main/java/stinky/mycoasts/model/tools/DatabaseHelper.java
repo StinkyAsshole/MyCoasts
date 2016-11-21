@@ -10,6 +10,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import stinky.mycoasts.model.dao.AccountDAO;
@@ -76,24 +77,25 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         } else {
             account = accounts.get(0);
         }
+        for (int i = 0; i < 10; i++) {
+            Category category = new Category();
+            category.setName("Категория "+i);
+            getCategoryDao().create(category);
 
-        Category category = new Category();
-        category.setName("Категория 1");
-        getCategoryDao().create(category);
-
-        SubCategory subCategory = new SubCategory();
-        subCategory.setName("Подкатегория 1");
-        subCategory.setCategory(category);
-        getSubCategoryDao().create(subCategory);
-        for (int i = 0; i < 20; i++) {
-            Coast coast = new Coast();
-            coast.setAccount(account);
-            coast.setAmount(10*i + i);
-            coast.setDate(DateUtils.now().plusHour(i*i));
-            coast.setSubCategory(subCategory);
-            getCoastDao().create(coast);
-            Log.d(MainActivity.TAG,coast.getSubCategory().getName());
+            for (int j = 0; j < 10; j++) {
+                SubCategory subCategory = new SubCategory();
+                subCategory.setName("Подкатегория " + i + " " + j);
+                subCategory.setCategory(category);
+                getSubCategoryDao().create(subCategory);
+                Coast coast = new Coast();
+                coast.setAccount(account);
+                coast.setAmount(10*i + j);
+                coast.setDate(DateUtils.now().plusHour(i*j));
+                coast.setSubCategory(subCategory);
+                getCoastDao().create(coast);
+            }
         }
+        Log.d(MainActivity.TAG, "generate done");
     }
 
     //Выполняется, когда БД имеет версию отличную от текущей

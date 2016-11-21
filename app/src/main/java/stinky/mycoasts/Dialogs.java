@@ -144,7 +144,7 @@ public class Dialogs {
                 categoryTv.setText(subCategoryAdapter.getCursor().getString(2));
             }
         });
-        dialog.setPositiveButton(R.string.action_income, new MyDialog.OnClickListener() {
+        dialog.setNegativeButton(R.string.action_income, new MyDialog.OnClickListener() {
             @Override
             public void onClick(MyDialog d) {
                 if (Tools.isEmpty(categoryTv, subCategoryTv, amount)){
@@ -154,7 +154,7 @@ public class Dialogs {
                 addCoast.onClick(d);
             }
         });
-        dialog.setNegativeButton(R.string.action_outcome, new MyDialog.OnClickListener() {
+        dialog.setPositiveButton(R.string.action_outcome, new MyDialog.OnClickListener() {
             @Override
             public void onClick(MyDialog d) {
                 if (Tools.isEmpty(categoryTv, subCategoryTv, amount)){
@@ -301,7 +301,7 @@ public class Dialogs {
             }
 
             if (message != null){
-                TextView messageTv = (TextView) findViewById(R.id.message);
+                TextView messageTv = (TextView) dialogView.findViewById(R.id.message);
                 messageTv.setVisibility(View.VISIBLE);
                 messageTv.setText(message);
             } else {

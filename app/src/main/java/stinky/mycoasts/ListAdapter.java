@@ -16,10 +16,14 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
     protected OnItemClickListener listener;
     private Class<V> clazz;
     private int layoutId;
+//    private OnListEnd onListEnd;
 
     public interface OnItemClickListener{
         void onClick(ListAdapter parent, View view, PersistEntity selectedObject, int position);
     }
+//    public interface OnListEnd{
+//        void onListEnd();
+//    }
 
 //    public ListAdapter(){};
     public ListAdapter(List<I> list, Class<V> clazz, int layoutId){
@@ -28,6 +32,17 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
         this.layoutId = layoutId;
     }
 
+    public List<I> getItems(){
+        return list;
+    }
+
+    public void addItems(List<I> newList, boolean toStart){
+        if (toStart){
+            list.addAll(0, newList);
+        }else {
+            list.addAll(newList);
+        }
+    }
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
@@ -63,6 +78,9 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
                     }
                 });
             }
+//        if (onListEnd != null && position == list.size() - 1 ){
+//            onListEnd.onListEnd();
+//        }
     }
 
     @Override
@@ -95,4 +113,8 @@ public class ListAdapter<I extends PersistEntity,V extends ListAdapter.ViewHolde
             this.adapter = adapter;
         }
     }
+//
+//    public void setOnListEnd(OnListEnd onListEnd) {
+//        this.onListEnd = onListEnd;
+//    }
 }
