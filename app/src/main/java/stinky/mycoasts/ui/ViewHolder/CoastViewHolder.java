@@ -19,12 +19,14 @@ import stinky.mycoasts.model.tools.HelperFactory;
 public class CoastViewHolder extends ListAdapter.ViewHolder<Coast> {
 
     TextView category;
+    TextView subCategory;
     TextView amount;
     TextView date;
 
     public CoastViewHolder(View itemView) {
         super(itemView);
         category = (TextView) itemView.findViewById(R.id.category);
+        subCategory = (TextView) itemView.findViewById(R.id.subCategory);
         amount = (TextView) itemView.findViewById(R.id.amount);
         date = (TextView) itemView.findViewById(R.id.date);
     }
@@ -45,7 +47,8 @@ public class CoastViewHolder extends ListAdapter.ViewHolder<Coast> {
             }
         }
         amount.setText(String.format(getRoot().getResources().getString(R.string.amount_rub), obj.getAmount()));
-        category.setText(obj.getSubCategory().getName());
+        subCategory.setText(obj.getSubCategory().getName());
+        category.setText(obj.getSubCategory().getCategory().getName());
         date.setText(DateUtils.toString(obj.getDate()));
         date.setVisibility(dateVisibility);
     }

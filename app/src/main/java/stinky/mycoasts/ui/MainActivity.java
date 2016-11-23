@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.PersistEntity;
+import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
@@ -52,6 +55,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     };
 
     private int currentAccountId = 0;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +70,10 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         }
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setupDrawer();
 
         // TODO: 21.11.2016 Удалить кнопку к херам
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -101,6 +107,14 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         } catch (NotFoundException e) {
             onAccountSelect();
         }
+    }
+
+    private void setupDrawer(){
+        DrawerBuilder result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar);
+
+        new DrawerBuilder().withActivity(this).build();
     }
 
     private void onAccountSelect(){

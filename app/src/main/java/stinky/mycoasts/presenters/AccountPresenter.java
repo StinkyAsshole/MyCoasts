@@ -133,4 +133,13 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         }
         return new ArrayList<>();
     }
+
+    public List<SubCategory> getSubCategoryList(){
+        try {
+            return subCategoryRep.queryForAll();
+        } catch (SQLException e) {
+            getErrorView().onError(e);
+        }
+        return new ArrayList<>();
+    }
 }
