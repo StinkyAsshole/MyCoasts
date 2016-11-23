@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,8 +18,6 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,15 +25,16 @@ import java.util.Collections;
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
+import stinky.mycoasts.DrawerListAdapter;
 import stinky.mycoasts.ListAdapter;
 import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.R;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
+import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.PersistEntity;
-import stinky.mycoasts.model.entity.SubCategory;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
@@ -75,15 +77,15 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
         setupDrawer();
 
-        // TODO: 21.11.2016 Удалить кнопку к херам
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onAccountSelect();
-            }
-        });
-        fab.setVisibility(View.INVISIBLE);
+//        // TODO: 21.11.2016 Удалить кнопку к херам
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onAccountSelect();
+//            }
+//        });
+//        fab.setVisibility(View.INVISIBLE);
 
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -110,11 +112,15 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     }
 
     private void setupDrawer(){
-        DrawerBuilder result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        RecyclerView leftDrawer= (RecyclerView) findViewById(R.id.left_drawer);
 
-        new DrawerBuilder().withActivity(this).build();
+        List<Category> categories = accountPresenter.getCategoryList();
+
+        DrawerListAdapter adapter = new DrawerListAdapter(categories);
+
+        leftDrawer.setAdapter(adapter);
+        leftDrawer.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void onAccountSelect(){
@@ -180,7 +186,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
     @Override
     public void onError(final Throwable e) {
-        final Snackbar t = Snackbar.make(findViewById(R.id.fab), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+        final Snackbar t = Snackbar.make(findViewById(R.id.fab2), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
         // TODO убрать
         Tools.getStackTrace(e);
         t.setAction(getString(R.string.action_details), new View.OnClickListener() {

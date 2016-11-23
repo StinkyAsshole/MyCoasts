@@ -134,9 +134,9 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
         return new ArrayList<>();
     }
 
-    public List<SubCategory> getSubCategoryList(){
+    public List<Category> getCategoryList(){
         try {
-            return subCategoryRep.queryForAll();
+            return categoryRep.queryForAll();
         } catch (SQLException e) {
             getErrorView().onError(e);
         }
