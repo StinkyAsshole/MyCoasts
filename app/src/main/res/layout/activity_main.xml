@@ -62,7 +62,7 @@
     </android.support.design.widget.CoordinatorLayout>
     <FrameLayout
         android:layout_gravity="start"
-        android:layout_width="240dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         >
         <include layout="@layout/drawer_layout"/>
