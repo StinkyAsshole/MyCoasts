@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -13,6 +13,7 @@
         tools:context=".ui.MainActivity">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -24,42 +25,66 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
                 </android.support.v7.widget.Toolbar>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <View
-                    android:layout_height="match_parent"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:orientation="vertical">
-                </View>
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_height="match_parent"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginRight="12dp"
-                    android:textColor="@color/text_light"
-                    android:textSize="@dimen/text_primary"
-                    android:gravity="center_horizontal"
-                    />
-            </LinearLayout>
         </android.support.design.widget.AppBarLayout>
-
-        <include layout="@layout/content_main" />
+        <LinearLayout
+            android:id="@+id/monthView"
+            android:layout_below="@id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/text_dark"
+                android:gravity="center"
+                android:text="Ноябрь"/>
+        </LinearLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/monthView">
+            <include layout="@layout/content_main" />
+        </FrameLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@id/monthView"
+            android:background="@drawable/shadow"/>
+        <LinearLayout
+            android:layout_below="@id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:orientation="horizontal">
+            <View
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
+            </View>
+            <TextView
+                android:id="@+id/date"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginRight="12dp"
+                android:textColor="@color/text_dark"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_size_small"
+                android:gravity="center_horizontal"
+                />
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_gravity="end|bottom"
-            android:src="@android:drawable/ic_input_add" />
-        
-    </android.support.design.widget.CoordinatorLayout>
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_input_add"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
     <FrameLayout
         android:layout_gravity="start"
         android:layout_width="300dp"
