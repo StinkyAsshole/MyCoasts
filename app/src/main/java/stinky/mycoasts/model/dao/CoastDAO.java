@@ -13,6 +13,7 @@ import java.util.List;
 
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Coast;
+import stinky.mycoasts.model.tools.DateUtils;
 
 public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
 
@@ -22,9 +23,16 @@ public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<Coast> getByDate(int accountId, Date startDate, Date finishDate, int page) throws SQLException{
+//    public List<Coast> getByDate(int accountId, Date startDate, Date finishDate, int page) throws SQLException{
+//        return this.query(
+//                pageQuery(page).where().ge("date", startDate).and().le("date", finishDate).and().eq("account_id", accountId).prepare()
+//        );
+//    }
+
+    public List<Coast> getByMonthDiff(int accountId, int month) throws SQLException{
+        int m = DateUtils.now().minusMonth(month).getMonth();
         return this.query(
-                pageQuery(page).where().ge("date", startDate).and().le("date", finishDate).and().eq("account_id", accountId).prepare()
+                queryBuilder().orderBy("date", false).where().ge("date", DateUtils.getStartOfMonth(m)).and().le("date", DateUtils.getFinishOfMonth(m)).and().eq("account_id", accountId).prepare()
         );
     }
 

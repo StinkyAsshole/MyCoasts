@@ -43,7 +43,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/monthView">
-            <include layout="@layout/content_main" />
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </FrameLayout>
         <View
             android:layout_width="match_parent"

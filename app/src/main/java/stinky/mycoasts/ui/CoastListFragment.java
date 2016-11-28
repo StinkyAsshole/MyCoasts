@@ -92,27 +92,27 @@ public class CoastListFragment extends Fragment {
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0){
-                    visibleItemCount = mLayoutManager.getChildCount();
-                    totalItemCount = mLayoutManager.getItemCount();
-                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
-
-                    if (loading){
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount){
-                            loading = false;
-                            MainActivity mainActivity = (MainActivity) getActivity();
-                            mainActivity.accountPresenter.showCoastList(accountId, ++lastPage);
-                            loading = true;
-                        }
-                    }
-                }
-            }
-        });
+//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+//        {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+//            {
+//                if(dy > 0){
+//                    visibleItemCount = mLayoutManager.getChildCount();
+//                    totalItemCount = mLayoutManager.getItemCount();
+//                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+//
+//                    if (loading){
+//                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount){
+//                            loading = false;
+//                            MainActivity mainActivity = (MainActivity) getActivity();
+//                            mainActivity.accountPresenter.showCoastList(accountId, ++lastPage);
+//                            loading = true;
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
         return rootView;
     }

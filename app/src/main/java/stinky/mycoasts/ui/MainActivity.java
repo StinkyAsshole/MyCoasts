@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,12 +31,14 @@ import stinky.mycoasts.DrawerListAdapter;
 import stinky.mycoasts.ListAdapter;
 import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.R;
+import stinky.mycoasts.ScreenSlidePagerAdapter;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.Tools;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.PersistEntity;
+import stinky.mycoasts.model.tools.DateUtils;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
@@ -57,7 +61,12 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     };
 
     private int currentAccountId = 0;
+    private int currentMothDiff = 0;
     Toolbar toolbar;
+
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +82,11 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mPager = (ViewPager) findViewById(R.id.pager);
+
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+
         setSupportActionBar(toolbar);
 
         setupDrawer();
@@ -164,12 +178,13 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         if (fragment != null){
             showCoastList(Collections.singletonList(coast), true);
         } else {
-            accountPresenter.showCoastList(currentAccountId, 0);
+            accountPresenter.showCoastList(currentAccountId, currentMothDiff);
         }
     }
 
     @Override
     public void showCoastList(List<Coast> coastList, boolean toStart){
+        mPager.getC
         CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
         if (fragment == null) {
             fragment = new CoastListFragment();

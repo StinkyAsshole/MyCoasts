@@ -27,13 +27,18 @@ public class DateUtils {
             throw new RuntimeException("Invalid number of mount");
         }
         // get date and clear time of day
-        Calendar cal = getCurrentMount();
+        Calendar cal = getCurrentMonth();
         cal.set(Calendar.MONTH, mount);
         return cal;
     }
 
+    public int getMonth(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.MONTH);
+    }
 
-    private static Calendar getCurrentMount() {
+    private static Calendar getCurrentMonth() {
         // get current and clear time of day
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
@@ -43,12 +48,12 @@ public class DateUtils {
         return cal;
     }
     public static Date getStartOfMonth(){
-        Calendar cal = getCurrentMount();
+        Calendar cal = getCurrentMonth();
         cal.set(Calendar.DAY_OF_MONTH, 1);
         return cal.getTime();
     }
     public static Date getFinishOfMonth(){
-        Calendar cal = getCurrentMount();
+        Calendar cal = getCurrentMonth();
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         return cal.getTime();
     }
@@ -123,6 +128,7 @@ public class DateUtils {
     private final long MINUTE = SECOND*60;
     private final long HOUR = MINUTE*60;
     private final long DAY = HOUR*24;
+    ;
 
     public DateUtils plusHour(int hours){
         return new DateUtils(date.getTime() + hours * HOUR);
@@ -138,6 +144,18 @@ public class DateUtils {
         return plusDay(-1 * days);
     }
 
+    public DateUtils plusMonth(int months){
+        int day = 1;
+        switch (months){
+            case 1: case 3: case 5: case 7: case 8: case 10: case 11: day = 31; break;
+            case 2: day = 28; break;
+            case 4: case 6: case 9: case 12: day = 31; break;
+        }
+        return new DateUtils(date.getTime() + day * DAY);
+    }
+    public DateUtils minusMonth(int months){
+        return plusDay(-1 * months);
+    }
 
     public Date getDate(){
         return date;
