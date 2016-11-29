@@ -1,19 +1,12 @@
 package stinky.mycoasts.presenters;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.query.In;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import stinky.mycoasts.Dialogs;
 import stinky.mycoasts.NotFoundException;
 import stinky.mycoasts.Settings;
 import stinky.mycoasts.model.dao.AccountDAO;
@@ -98,7 +91,8 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
 
     public void selectAccount(Integer account) {
         Settings.setCurrentAccount(account);
-        showCoastList(account, 0);
+        getViewState().onSelectAccount(account);
+//        showCoastList(account, 0);
     }
 
 //    public void showCoastListByCurrentMonth(Integer account) {
@@ -113,17 +107,17 @@ public class AccountPresenter extends ParentPresenter<AccountView>{
 //        getViewState().showCoastList(coastList, false);
 //    }
 
-    public void showCoastList(Integer account, int monthDiff) {
-        List<Coast> coastList;
-        try {
-            coastList = coastRep.getByMonthDiff(account, monthDiff);
-        } catch (SQLException e) {
-            getErrorView().onError(e);
-            return;
-        }
-
-        getViewState().showCoastList(coastList, false);
-    }
+//    public void showCoastList(Integer account, int monthDiff) {
+//        List<Coast> coastList;
+//        try {
+//            coastList = coastRep.getByMonthDiff(account, monthDiff);
+//        } catch (SQLException e) {
+//            getErrorView().onError(e);
+//            return;
+//        }
+//
+//        getViewState().showCoastList(coastList, false);
+//    }
 
     public List<Account> getAccountList() {
         try {

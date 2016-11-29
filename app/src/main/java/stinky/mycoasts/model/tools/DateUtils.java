@@ -35,7 +35,7 @@ public class DateUtils {
     public int getMonth(){
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return cal.get(Calendar.MONTH);
+        return cal.get(Calendar.MONTH) + 1;
     }
 
     private static Calendar getCurrentMonth() {

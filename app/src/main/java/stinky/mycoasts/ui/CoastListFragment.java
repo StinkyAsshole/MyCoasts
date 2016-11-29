@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import org.w3c.dom.Text;
@@ -21,14 +22,21 @@ import stinky.mycoasts.R;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.tools.DateUtils;
 import stinky.mycoasts.presenters.AccountPresenter;
+import stinky.mycoasts.presenters.CoastPresenter;
 import stinky.mycoasts.ui.ViewHolder.CoastViewHolder;
+import stinky.mycoasts.view.AccountView;
+import stinky.mycoasts.view.CoastView;
 
-public class CoastListFragment extends Fragment {
+import static android.R.id.list;
+
+public class CoastListFragment extends MvpAppCompatFragment implements CoastView {
+
+    @InjectPresenter
+    CoastPresenter coastPresenter;
 
     public static final String TAG = "CoastListFragment";
-    public static final String KEY_LIST = "list";
-    public static final String KEY_PAGE = "page";
     public static final String KEY_ACCOUNT_ID = "account_ID";
+    public static final String KEY_MONTH_DIF = "month_dif";
 
     protected RecyclerView mRecyclerView;
     protected ListAdapter<Coast, CoastViewHolder> adapter;
@@ -36,11 +44,10 @@ public class CoastListFragment extends Fragment {
 
     private TextView date;
     private int lastVisiblePosition = 0;
-    private int lastPage = 0;
-    private int accountId = 0;
+    private int monthDif;
+    private int accountId;
+    private List<Coast> coastList;
 
-    private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +57,6 @@ public class CoastListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_coast_list, container, false);
 
-//        date = (TextView) rootView.findViewById(R.id.date);
         date = (TextView) getActivity().findViewById(R.id.date);
         rootView.setTag(TAG);
 
@@ -69,28 +75,11 @@ public class CoastListFragment extends Fragment {
             }
         });
 
-        List<Coast> list = new ArrayList<>();
         Bundle args = getArguments();
+        accountId = args.getInt(KEY_ACCOUNT_ID, 0);
+        monthDif = args.getInt(KEY_MONTH_DIF, 0);
 
-        if (args != null ){
-            list = (List<Coast>) args.getSerializable(KEY_LIST);
-            if (list != null && !list.isEmpty()){
-                date.setText(DateUtils.toString(list.get(0).getDate()));
-            }
-            lastPage = args.getInt(KEY_PAGE, 0);
-            accountId = args.getInt(KEY_ACCOUNT_ID, 0);
-        }
-
-        adapter = new ListAdapter<>(list, CoastViewHolder.class, R.layout.item_coast_list);
-//        adapter.setOnListEnd(new ListAdapter.OnListEnd() {
-//            @Override
-//            public void onListEnd() {
-//                MainActivity mainActivity = (MainActivity) getActivity();
-//                mainActivity.accountPresenter.showCoastList(accountId, ++lastPage);
-//            }
-//        });
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        coastPresenter.showCoastList(accountId, monthDif);
 
 //        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
 //        {
@@ -115,5 +104,15 @@ public class CoastListFragment extends Fragment {
 //        });
 
         return rootView;
+    }
+
+    @Override
+    public void onShowCoastList(List<Coast> list) {
+        if (list != null && !list.isEmpty()) {
+            date.setText(DateUtils.toString(list.get(0).getDate()));
+        }
+        adapter = new ListAdapter<>(list, CoastViewHolder.class, R.layout.item_coast_list);
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
 }

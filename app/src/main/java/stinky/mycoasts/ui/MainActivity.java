@@ -22,8 +22,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import stinky.mycoasts.Dialogs;
@@ -38,7 +36,6 @@ import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Category;
 import stinky.mycoasts.model.entity.Coast;
 import stinky.mycoasts.model.entity.PersistEntity;
-import stinky.mycoasts.model.tools.DateUtils;
 import stinky.mycoasts.model.tools.HelperFactory;
 import stinky.mycoasts.presenters.AccountPresenter;
 import stinky.mycoasts.view.AccountView;
@@ -65,8 +62,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     Toolbar toolbar;
 
     private ViewPager mPager;
-    private PagerAdapter mPagerAdapter;
-
+    private ScreenSlidePagerAdapter coastMonthAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,22 +80,9 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mPager = (ViewPager) findViewById(R.id.pager);
 
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-
         setSupportActionBar(toolbar);
 
         setupDrawer();
-
-//        // TODO: 21.11.2016 Удалить кнопку к херам
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onAccountSelect();
-//            }
-//        });
-//        fab.setVisibility(View.INVISIBLE);
 
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +104,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
             currentAccountId = Settings.getCurrentAccount();
             accountPresenter.selectAccount(currentAccountId);
         } catch (NotFoundException e) {
-            onAccountSelect();
+            selectAccount();
         }
     }
 
@@ -137,7 +120,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void onAccountSelect(){
+    private void selectAccount(){
         List<Account> accList = accountPresenter.getAccountList();
         if (!accList.isEmpty()){
             Dialogs.selectAccount(this, accList, onCreateAccount, new ListAdapter.OnItemClickListener() {
@@ -150,6 +133,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
             Dialogs.createAccount(this, onCreateAccount).show(Dialogs.Tags.createAccount);
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,18 +157,26 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
     }
 
     @Override
-    public void onAddCoast(Coast coast) {
-        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
-        if (fragment != null){
-            showCoastList(Collections.singletonList(coast), true);
-        } else {
-            accountPresenter.showCoastList(currentAccountId, currentMothDiff);
-        }
+    public void onSelectAccount(int account) {
+        currentAccountId = account;
+        coastMonthAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        coastMonthAdapter.setAccountId(account);
+        mPager.setAdapter(coastMonthAdapter);
     }
 
     @Override
+    public void onAddCoast(Coast coast) {
+//        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
+//        if (fragment != null){
+//            showCoastList(Collections.singletonList(coast), true);
+//        } else {
+//            accountPresenter.showCoastList(currentAccountId, currentMothDiff);
+//        }
+    }
+/*
+    @Override
     public void showCoastList(List<Coast> coastList, boolean toStart){
-        mPager.getC
+
         CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
         if (fragment == null) {
             fragment = new CoastListFragment();
@@ -198,6 +190,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
             fragment.adapter.notifyDataSetChanged();
         }
     }
+*/
 
     @Override
     public void onError(final Throwable e) {

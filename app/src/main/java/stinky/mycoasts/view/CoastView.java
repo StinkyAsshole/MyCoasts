@@ -7,8 +7,6 @@ import java.util.List;
 import stinky.mycoasts.model.entity.Account;
 import stinky.mycoasts.model.entity.Coast;
 
-public interface AccountView extends MvpView {
-    void onCreateAccount(Account account);
-    void onSelectAccount(int account);
-    void onAddCoast(Coast coast);
+public interface CoastView extends MvpView {
+    void onShowCoastList(List<Coast> list);
 }
