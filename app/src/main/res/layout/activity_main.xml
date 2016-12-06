@@ -26,44 +26,36 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
                 </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
-        <LinearLayout
-            android:id="@+id/monthView"
-            android:layout_below="@id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@color/text_dark"
-                android:gravity="center"
-                android:text="Ноябрь"/>
-        </LinearLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/monthView">
+            android:layout_below="@id/appBar">
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent" >
+                <android.support.v4.view.PagerTabStrip
+                    android:id="@+id/pagerTabStrip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top">
+                </android.support.v4.view.PagerTabStrip>
+            </android.support.v4.view.ViewPager>
         </FrameLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_below="@id/monthView"
-            android:background="@drawable/shadow"/>
         <LinearLayout
             android:layout_below="@id/appBar"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:orientation="horizontal">
+
             <View
                 android:layout_height="match_parent"
                 android:layout_width="0dp"
                 android:layout_weight="2"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/view">
             </View>
+
             <TextView
                 android:id="@+id/date"
                 android:layout_height="match_parent"

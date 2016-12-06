@@ -69,12 +69,12 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         super.onCreate(savedInstanceState);
         accountPresenter.setErrorView(this);
 
-        try {
-            HelperFactory.getHelper().truncateDataBase();
-            HelperFactory.getHelper().generateDemoData();
-        } catch (SQLException e) {
-            this.onError(e);
-        }
+//        try {
+//            HelperFactory.getHelper().truncateDataBase();
+//            HelperFactory.getHelper().generateDemoData();
+//        } catch (SQLException e) {
+//            this.onError(e);
+//        }
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,6 +106,15 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         } catch (NotFoundException e) {
             selectAccount();
         }
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                coastMonthAdapter.setCurrentPosition(position);
+            }
+            @Override public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     private void setupDrawer(){
@@ -166,6 +175,7 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
     @Override
     public void onAddCoast(Coast coast) {
+        coastMonthAdapter.refresh();
 //        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
 //        if (fragment != null){
 //            showCoastList(Collections.singletonList(coast), true);

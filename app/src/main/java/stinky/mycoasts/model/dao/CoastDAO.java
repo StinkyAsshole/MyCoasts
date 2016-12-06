@@ -55,6 +55,17 @@ public class CoastDAO extends BaseDaoImpl<Coast, Integer> {
         return this.query(pageQuery(page).where().eq("account_id", account).prepare());
     }
 
+    public int getMonthCount() throws SQLException {
+        String[] count = this.queryRaw(
+                "SELECT round((julianday(Date('now')) - julianday(date))/30) FROM coast ORDER BY date LIMIT 1"
+        ).getFirstResult();
+
+        if (count == null){
+            return 0;
+        }
+        return Integer.valueOf(count[0])+1;
+    }
+
     public int deleteByAccountId(int accountid) throws SQLException {
         DeleteBuilder<Coast, Integer> deleteBuilder = deleteBuilder();
         deleteBuilder.where().eq("account_id", accountid);

@@ -28,7 +28,7 @@ public class DateUtils {
         }
         // get date and clear time of day
         Calendar cal = getCurrentMonth();
-        cal.set(Calendar.MONTH, mount);
+        cal.set(Calendar.MONTH, mount-1);
         return cal;
     }
 
@@ -36,6 +36,14 @@ public class DateUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal.get(Calendar.MONTH) + 1;
+    }
+
+    public List<String> monthNames = Arrays.asList("Январь","Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябр", "Ноябрь", "Декабрь");
+
+    public String getMonthString(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return monthNames.get(cal.get(Calendar.MONTH));
     }
 
     private static Calendar getCurrentMonth() {
@@ -63,7 +71,8 @@ public class DateUtils {
 
         // get start of the month
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        return cal.getTime();
+        Date date = cal.getTime();
+        return date;
     }
 
     public static Date getFinishOfMonth(int mount){
