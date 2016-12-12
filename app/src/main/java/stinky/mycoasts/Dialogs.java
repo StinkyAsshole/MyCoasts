@@ -109,7 +109,7 @@ public class Dialogs {
         categoryAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             @Override
             public CharSequence convertToString(Cursor cursor) {
-                return cursor.getString(2);
+                return cursor.getString(1);
             }
         });
 

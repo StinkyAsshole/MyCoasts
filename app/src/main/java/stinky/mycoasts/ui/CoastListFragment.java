@@ -79,7 +79,7 @@ public class CoastListFragment extends MvpAppCompatFragment implements CoastView
         accountId = args.getInt(KEY_ACCOUNT_ID, 0);
         monthDif = args.getInt(KEY_MONTH_DIF, 0);
 
-        coastPresenter.showCoastList(accountId, monthDif);
+        refreshCoastList();
 
 //        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
 //        {
@@ -104,6 +104,10 @@ public class CoastListFragment extends MvpAppCompatFragment implements CoastView
 //        });
 
         return rootView;
+    }
+
+    public void refreshCoastList(){
+        coastPresenter.showCoastList(accountId, monthDif);
     }
 
     @Override

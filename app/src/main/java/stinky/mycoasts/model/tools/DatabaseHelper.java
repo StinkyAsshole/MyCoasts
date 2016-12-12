@@ -90,7 +90,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 Coast coast = new Coast();
                 coast.setAccount(account);
                 coast.setAmount(10*i + j);
-                coast.setDate(DateUtils.now().plusMonth(i));
+                coast.setDate(DateUtils.now().minusMonth(i));
                 coast.setSubCategory(subCategory);
                 getCoastDao().create(coast);
             }

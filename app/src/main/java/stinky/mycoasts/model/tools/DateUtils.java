@@ -154,16 +154,16 @@ public class DateUtils {
     }
 
     public DateUtils plusMonth(int months){
-        int day = 1;
-        switch (months){
-            case 1: case 3: case 5: case 7: case 8: case 10: case 11: day = 31; break;
-            case 2: day = 28; break;
-            case 4: case 6: case 9: case 12: day = 31; break;
-        }
-        return new DateUtils(date.getTime() + day * DAY);
+//        int day = 1;
+//        switch (Math.abs(months)){
+//            case 1: case 3: case 5: case 7: case 8: case 10: case 11: day = 31; break;
+//            case 2: day = 28; break;
+//            case 4: case 6: case 9: case 12: day = 31; break;
+//        }
+        return new DateUtils(date.getTime() + 30 * DAY * months);
     }
     public DateUtils minusMonth(int months){
-        return plusDay(-1 * months);
+        return plusMonth(-1 * months);
     }
 
     public Date getDate(){

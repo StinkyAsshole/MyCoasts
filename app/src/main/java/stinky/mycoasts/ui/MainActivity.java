@@ -69,12 +69,12 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         super.onCreate(savedInstanceState);
         accountPresenter.setErrorView(this);
 
-//        try {
-//            HelperFactory.getHelper().truncateDataBase();
-//            HelperFactory.getHelper().generateDemoData();
-//        } catch (SQLException e) {
-//            this.onError(e);
-//        }
+        try {
+            HelperFactory.getHelper().truncateDataBase();
+            HelperFactory.getHelper().generateDemoData();
+        } catch (SQLException e) {
+            this.onError(e);
+        }
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,7 +152,8 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_refresh) {
+            coastMonthAdapter.notifyDataSetChanged();
             return true;
         }
 
@@ -171,36 +172,13 @@ public class MainActivity extends MvpAppCompatActivity implements AccountView, E
         coastMonthAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         coastMonthAdapter.setAccountId(account);
         mPager.setAdapter(coastMonthAdapter);
+        mPager.setCurrentItem(coastMonthAdapter.getCount());
     }
 
     @Override
     public void onAddCoast(Coast coast) {
         coastMonthAdapter.refresh();
-//        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
-//        if (fragment != null){
-//            showCoastList(Collections.singletonList(coast), true);
-//        } else {
-//            accountPresenter.showCoastList(currentAccountId, currentMothDiff);
-//        }
     }
-/*
-    @Override
-    public void showCoastList(List<Coast> coastList, boolean toStart){
-
-        CoastListFragment fragment = (CoastListFragment) getSupportFragmentManager().findFragmentByTag(CoastListFragment.TAG);
-        if (fragment == null) {
-            fragment = new CoastListFragment();
-            Bundle args = new Bundle();
-            args.putSerializable(CoastListFragment.KEY_LIST, new ArrayList<>(coastList));
-            args.putInt(CoastListFragment.KEY_ACCOUNT_ID, currentAccountId);
-            fragment.setArguments(args);
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, CoastListFragment.TAG).commit();
-        } else {
-            fragment.adapter.addItems(coastList, toStart);
-            fragment.adapter.notifyDataSetChanged();
-        }
-    }
-*/
 
     @Override
     public void onError(final Throwable e) {

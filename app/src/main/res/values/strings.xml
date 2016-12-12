@@ -10,6 +10,7 @@
     <string name="hint_amount">Сумма</string>
 
     <string name="action_create">Создать</string>
+    <string name="action_refresh">Обновить</string>
     <string name="action_details">Подробнее</string>
     <string name="action_delete_account">Удалить счет</string>
     <string name="action_deleted">Удалено</string>
